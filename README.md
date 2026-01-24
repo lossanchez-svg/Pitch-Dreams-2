@@ -201,19 +201,67 @@ npm test:watch
 
 ## 🎨 Design System
 
+Visit `/styleguide` to see all components in action with interactive demos.
+
+### Brand Voice
+- **Tagline:** "Train with purpose. Track your climb. Play with joy."
+- **Copy Tone:** Encouraging, honest, non-manipulative
+- **Child Vocabulary:**
+  - "Today's Session" (not "workout")
+  - "Next Targets" (not "goals")
+  - "My Climb" (not "progress")
+  - "Game IQ" (not "learn")
+  - "Consistency Chain" (not "streak" - and it "pauses," not "breaks")
+
 ### Colors
-- **Primary:** Blue (`#3B82F6`) – CTAs, links
-- **Accent:** Green (`#2ECC71`) – Success, streaks, soccer theme
-- **Danger:** Red (`#EF4444`) – Delete, warnings
+- **Primary (Training Energy):** Blue (`#3B82F6`) – CTAs, links, action states
+- **Accent (Progress/Win):** Green (`#22C55E`) – Success, consistency, achievements
+- **Semantic:** Success, Warning, Error, Info with proper light/dark mode support
+- **Reduced Motion:** All animations respect `prefers-reduced-motion`
+
+### PitchDreams Component Library
+
+Located in `/components/pitchdreams/`:
+
+#### Parent Trust & Safety
+- `ParentTrustSafetyModal` - 6-card trust pledge modal
+- `ParentTrustBanner` - Dashboard reassurance banner
+
+#### Child Core Loop
+- `PrimaryCTASection` - Hero CTA for child home with randomized encouragement
+- `DrillCard` - Training drill selection cards with pro tips
+- `CompletionToast` - Non-spammy success feedback
+
+#### Tap-First Logging
+- `RpeSlider` - 1–10 effort rating with visual feedback
+- `MoodPicker` - 5-option mood selection (great/good/okay/tired/off)
+- `ChoiceChips` - Multi-select preset chips for wins & focus areas
+
+#### Progress & Consistency
+- `ConsistencyChainBadge` - Non-punitive streak display
+- `ConsistencyChainCard` - Full consistency card with paused state
+
+#### Locked States
+- `LockedState` - Generic locked feature display
+- `PermissionLockedState` - Parent-controlled feature gate
+- `AgeGatedState` - Age-appropriate feature restriction
+
+All components follow:
+- Privacy-first design (no social comparisons, no shame language)
+- Accessibility best practices (WCAG 2.1 AA, keyboard nav, screen readers)
+- Touch-friendly targets (48×48px minimum)
+- Light/dark mode support
+- Reduced motion support
 
 ### Typography
-- **Font:** Inter (body), DM Sans (headings for ages 8–13)
-- **Scales:** H1 (2rem), H2 (1.5rem), Body (1rem)
+- **Font:** Inter (body), DM Sans (headings)
+- **Scales:** Display, Heading, Body, Caption with proper hierarchy
 
 ### Accessibility
 - WCAG 2.1 AA compliant (color contrast, keyboard nav, screen reader support)
-- Touch targets: min 44×44px
+- Touch targets: min 48×48px for child mode, 44×44px for parent mode
 - Focus indicators on all interactive elements
+- Semantic HTML with proper ARIA labels
 
 ## 🤝 Contributing
 
