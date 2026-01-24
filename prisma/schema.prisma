@@ -1,0 +1,248 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // Use "postgresql" for production
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTH
+// ============================================
+
+model ParentUser {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  name          String?
+
+  weeklyEmailEnabled Boolean @default(true)
+
+  childProfiles ChildProfile[]
+  sessions      Session[]
+  accounts      Account[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("parent_users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user ParentUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user ParentUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// ============================================
+// CHILD PROFILE
+// ============================================
+
+model ChildProfile {
+  id       String @id @default(cuid())
+  parentId String
+
+  nickname    String
+  age         Int
+  position    String?
+  goals       String // JSON string for SQLite, or Json type for Postgres
+  avatarColor String @default("#3B82F6")
+
+  freeTextEnabled     Boolean @default(false)
+  trainingWindowStart String?
+  trainingWindowEnd   String?
+
+  parent            ParentUser              @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  sessionLogs       SessionLog[]
+  challengeAttempts SkillChallengeAttempt[]
+  lessonProgress    LessonProgress[]
+  trainingPlans     TrainingPlan[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("child_profiles")
+}
+
+// ============================================
+// TRAINING CONTENT
+// ============================================
+
+model Drill {
+  id          String  @id @default(cuid())
+  name        String
+  category    String
+  description String
+  duration    Int?
+  reps        Int?
+  coachTip    String
+  difficulty  String
+  ageMin      Int     @default(8)
+  ageMax      Int     @default(18)
+  imageUrl    String?
+
+  planDrills PlanDrill[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("drills")
+}
+
+model Lesson {
+  id          String @id @default(cuid())
+  title       String
+  category    String
+  content     String
+  readingTime Int
+  difficulty  String
+  ageMin      Int    @default(8)
+  ageMax      Int    @default(18)
+
+  quizQuestions String // JSON string
+
+  progress LessonProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lessons")
+}
+
+model SkillChallenge {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  metric      String
+
+  attempts SkillChallengeAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("skill_challenges")
+}
+
+// ============================================
+// TRAINING PLANS
+// ============================================
+
+model TrainingPlan {
+  id       String   @id @default(cuid())
+  childId  String
+  date     DateTime
+  planType String
+
+  child      ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  planDrills PlanDrill[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([childId, date])
+  @@map("training_plans")
+}
+
+model PlanDrill {
+  id        String  @id @default(cuid())
+  planId    String
+  drillId   String
+  order     Int
+  completed Boolean @default(false)
+
+  plan  TrainingPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  drill Drill        @relation(fields: [drillId], references: [id])
+
+  @@unique([planId, drillId])
+  @@map("plan_drills")
+}
+
+// ============================================
+// SESSION LOGS
+// ============================================
+
+model SessionLog {
+  id           String  @id @default(cuid())
+  childId      String
+  activityType String
+  effortLevel  Int
+  mood         String
+  duration     Int?
+  win          String?
+  focus        String?
+
+  child ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("session_logs")
+}
+
+// ============================================
+// SKILL CHALLENGE ATTEMPTS
+// ============================================
+
+model SkillChallengeAttempt {
+  id          String @id @default(cuid())
+  childId     String
+  challengeId String
+  value       Int
+
+  child     ChildProfile   @relation(fields: [childId], references: [id], onDelete: Cascade)
+  challenge SkillChallenge @relation(fields: [challengeId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("skill_challenge_attempts")
+}
+
+// ============================================
+// LESSON PROGRESS
+// ============================================
+
+model LessonProgress {
+  id        String  @id @default(cuid())
+  childId   String
+  lessonId  String
+  completed Boolean @default(false)
+  quizScore Int?
+  quizTotal Int?
+
+  child  ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  lesson Lesson       @relation(fields: [lessonId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([childId, lessonId])
+  @@map("lesson_progress")
+}
