@@ -3,14 +3,71 @@
 @tailwind utilities;
 
 :root {
+  /* Base colors */
   --foreground-rgb: 17, 24, 39;
   --background-rgb: 255, 255, 255;
+
+  /* PitchDreams semantic tokens */
+  --pd-training-energy: 59 130 246; /* primary-500 */
+  --pd-progress-win: 34 197 94; /* accent-500 */
+  --pd-trust-parent: 99 102 241; /* indigo-500 */
+  --pd-surface-base: 255 255 255;
+  --pd-surface-elevated: 250 250 249; /* gray-50 */
+  --pd-surface-card: 255 255 255;
+  --pd-border-subtle: 231 229 228; /* gray-200 */
+  --pd-text-primary: 28 25 23; /* gray-900 */
+  --pd-text-secondary: 87 83 78; /* gray-600 */
+  --pd-text-tertiary: 168 162 158; /* gray-400 */
+
+  /* Interaction states */
+  --pd-hover-overlay: 0 0 0 / 0.04;
+  --pd-press-overlay: 0 0 0 / 0.08;
+  --pd-focus-ring: 59 130 246; /* primary-500 */
+
+  /* Animation durations (respects prefers-reduced-motion) */
+  --pd-duration-fast: 150ms;
+  --pd-duration-base: 200ms;
+  --pd-duration-slow: 300ms;
+  --pd-duration-delight: 800ms;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 249, 250, 251;
     --background-rgb: 31, 41, 55;
+
+    /* Dark mode overrides */
+    --pd-training-energy: 96 165 250; /* primary-400 */
+    --pd-progress-win: 74 222 128; /* accent-400 */
+    --pd-trust-parent: 129 140 248;
+    --pd-surface-base: 28 25 23; /* gray-900 */
+    --pd-surface-elevated: 41 37 36; /* gray-800 */
+    --pd-surface-card: 41 37 36;
+    --pd-border-subtle: 68 64 60; /* gray-700 */
+    --pd-text-primary: 250 250 249; /* gray-50 */
+    --pd-text-secondary: 214 211 209; /* gray-300 */
+    --pd-text-tertiary: 168 162 158; /* gray-400 */
+    --pd-hover-overlay: 255 255 255 / 0.06;
+    --pd-press-overlay: 255 255 255 / 0.12;
+  }
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pd-duration-fast: 0ms;
+    --pd-duration-base: 0ms;
+    --pd-duration-slow: 0ms;
+    --pd-duration-delight: 0ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
