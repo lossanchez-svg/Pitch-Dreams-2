@@ -1,9 +1,32 @@
+'use client'
+
+import { useState } from 'react'
 import Link from 'next/link'
 import { Home, Dumbbell, TrendingUp, BookOpen, Play, Check, Flame, Trophy, Settings, Shield } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import {
+  ParentTrustBanner,
+  PrimaryCTASection,
+  DrillCard,
+  RpeSlider,
+  MoodPicker,
+  ChoiceChips,
+  winPresets,
+  focusPresets,
+  ConsistencyChainBadge,
+  ConsistencyChainCard,
+  CompletionToast,
+  LockedState,
+  PermissionLockedState,
+} from '@/components/pitchdreams'
 
 export default function StyleguidePage() {
+  const [rpeValue, setRpeValue] = useState(5)
+  const [moodValue, setMoodValue] = useState<'great' | 'good' | 'okay' | 'tired' | 'off' | null>(null)
+  const [winsValue, setWinsValue] = useState<string[]>([])
+  const [showToast, setShowToast] = useState(false)
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 py-12">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -452,6 +475,167 @@ export default function StyleguidePage() {
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
             All animations respect <code className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">prefers-reduced-motion</code> user preference.
           </p>
+        </section>
+
+        {/* PitchDreams Components */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+            PitchDreams Components
+          </h2>
+
+          {/* Parent Trust Banner */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Parent Trust Banner
+            </h3>
+            <ParentTrustBanner />
+          </div>
+
+          {/* Primary CTA Section */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Primary CTA Section (Child Home)
+            </h3>
+            <PrimaryCTASection
+              playerName="Alex"
+              onStartSession={() => alert('Start session clicked!')}
+              sessionsThisWeek={3}
+              consistencyDays={5}
+            />
+          </div>
+
+          {/* Drill Card */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Drill Card
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <DrillCard
+                title="Ball Mastery - Foundation"
+                category="Technical"
+                duration={15}
+                difficulty="beginner"
+                proTip="Focus on light touches. Speed comes later."
+                onSelect={() => alert('Drill selected')}
+              />
+              <DrillCard
+                title="1v1 Decision Making"
+                category="Tactical"
+                duration={20}
+                difficulty="intermediate"
+                proTip="Watch the defender's hips, not the ball."
+                onSelect={() => alert('Drill selected')}
+                isSelected
+              />
+            </div>
+          </div>
+
+          {/* Logging Components */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Tap-First Logging
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>RPE Slider</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <RpeSlider value={rpeValue} onChange={setRpeValue} />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Mood Picker</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <MoodPicker value={moodValue} onChange={setMoodValue} />
+                </CardContent>
+              </Card>
+
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>Choice Chips (Wins)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ChoiceChips
+                    label="What went well?"
+                    options={winPresets}
+                    value={winsValue}
+                    onChange={setWinsValue}
+                    multiSelect
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Consistency & Progress */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Consistency & Progress
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Active Chain</p>
+                <ConsistencyChainBadge days={7} />
+                <div className="mt-4">
+                  <ConsistencyChainCard days={7} />
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">Paused Chain (Non-Punitive)</p>
+                <ConsistencyChainBadge days={12} isPaused />
+                <div className="mt-4">
+                  <ConsistencyChainCard days={12} isPaused />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Completion Toast */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Completion Toast
+            </h3>
+            <Button onClick={() => setShowToast(true)}>
+              Show Completion Toast
+            </Button>
+            <CompletionToast
+              show={showToast}
+              onClose={() => setShowToast(false)}
+            />
+          </div>
+
+          {/* Locked States */}
+          <div className="mb-8">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              Locked States
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Permission Locked</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PermissionLockedState feature="Free Text Notes" />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Generic Locked</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <LockedState
+                    reason="Feature coming soon"
+                    subtext="This feature is in development and will be available in a future update."
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </section>
 
         {/* Documentation Link */}
