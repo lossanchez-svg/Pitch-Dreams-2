@@ -1,3 +1,4 @@
+// @ts-ignore - bad-words doesn't have type definitions
 import Filter from 'bad-words'
 
 const filter = new Filter()

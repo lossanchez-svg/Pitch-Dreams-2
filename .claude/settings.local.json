@@ -9,7 +9,9 @@
       "Bash(gh auth login:*)",
       "Bash(brew:*)",
       "Bash(chmod:*)",
-      "Bash(./install-and-push.sh)"
+      "Bash(./install-and-push.sh)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)"
     ]
   }
 }
