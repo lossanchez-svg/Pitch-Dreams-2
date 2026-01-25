@@ -8,6 +8,7 @@ export { ParentGateBanner } from './ParentGateBanner'
 export { ChildProfileCard } from './ChildProfileCard'
 export { FeaturePermissionsPanel } from './FeaturePermissionsPanel'
 export { DataExportDeletePanel } from './DataExportDeletePanel'
+export { ParentDashboardContent } from './ParentDashboardContent'
 
 // Child Core Loop
 export { PrimaryCTASection } from './PrimaryCTASection'

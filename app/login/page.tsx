@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import Button from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -19,28 +20,24 @@ export default function LoginPage() {
     setError('')
     setIsLoading(true)
 
-    // TODO: Implement NextAuth signIn
-    // const result = await signIn('credentials', {
-    //   redirect: false,
-    //   email,
-    //   password,
-    // })
-    //
-    // if (result?.error) {
-    //   setError('Invalid email or password')
-    //   setIsLoading(false)
-    //   return
-    // }
-    //
-    // router.push('/parent/dashboard')
+    try {
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      })
 
-    // Mock authentication for now
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (result?.error) {
+        setError('Invalid email or password')
+        setIsLoading(false)
+        return
+      }
 
-    if (email && password) {
+      // Successful login - redirect to dashboard
       router.push('/parent/dashboard')
-    } else {
-      setError('Please enter both email and password')
+      router.refresh() // Refresh to update session state
+    } catch (err) {
+      setError('An error occurred. Please try again.')
       setIsLoading(false)
     }
   }
