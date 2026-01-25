@@ -80,10 +80,10 @@ export default function ChildLogPage() {
             Select up to 3 wins from this session.
           </p>
           <ChoiceChips
+            label="Wins"
             options={winPresets}
-            selected={wins}
-            onSelect={setWins}
-            maxSelections={3}
+            value={wins}
+            onChange={setWins}
           />
         </Card>
 
@@ -94,10 +94,10 @@ export default function ChildLogPage() {
             Select up to 2 areas to work on.
           </p>
           <ChoiceChips
+            label="Focus Areas"
             options={focusPresets}
-            selected={focus}
-            onSelect={setFocus}
-            maxSelections={2}
+            value={focus}
+            onChange={setFocus}
           />
         </Card>
 
