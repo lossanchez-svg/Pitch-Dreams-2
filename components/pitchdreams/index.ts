@@ -9,11 +9,13 @@ export { ChildProfileCard } from './ChildProfileCard'
 export { FeaturePermissionsPanel } from './FeaturePermissionsPanel'
 export { DataExportDeletePanel } from './DataExportDeletePanel'
 export { ParentDashboardContent } from './ParentDashboardContent'
+export { ParentControlsContent } from './ParentControlsContent'
 
 // Child Core Loop
 export { PrimaryCTASection } from './PrimaryCTASection'
 export { DrillCard } from './DrillCard'
 export { CompletionToast } from './CompletionToast'
+export { ChildHomeContent } from './ChildHomeContent'
 
 // Logging Components
 export { RpeSlider } from './RpeSlider'

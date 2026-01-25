@@ -1,86 +1,56 @@
-'use client'
+import { getServerSession } from 'next-auth'
+import { redirect } from 'next/navigation'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/db'
+import { ParentControlsContent } from '@/components/pitchdreams/ParentControlsContent'
 
-import { useState } from 'react'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
-import {
-  FeaturePermissionsPanel,
-  DataExportDeletePanel,
-  ParentGateBanner,
-} from '@/components/pitchdreams'
-
-// Mock data - will be replaced with actual child data
-const mockChild = {
-  id: '1',
-  nickname: 'Alex',
-  age: 12,
+interface ParentControlsPageProps {
+  searchParams: {
+    childId?: string
+  }
 }
 
-export default function ParentControlsPage() {
-  const [activeTab, setActiveTab] = useState('permissions')
+export default async function ParentControlsPage({ searchParams }: ParentControlsPageProps) {
+  const session = await getServerSession(authOptions)
 
-  const handleSavePermissions = async (permissions: any) => {
-    // TODO: Implement Prisma mutation
-    console.log('Saving permissions:', permissions)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+  if (!session?.user?.id) {
+    redirect('/login')
   }
 
-  const handleExportData = async () => {
-    // TODO: Implement data export
-    console.log('Exporting data for child:', mockChild.id)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+  // Get childId from query params or use the first child
+  let childId = searchParams.childId
+
+  if (!childId) {
+    const firstChild = await prisma.child.findFirst({
+      where: { parentId: session.user.id },
+      select: { id: true },
+    })
+
+    if (!firstChild) {
+      redirect('/parent/dashboard')
+    }
+
+    childId = firstChild.id
   }
 
-  const handleDeleteAccount = async () => {
-    // TODO: Implement account deletion
-    console.log('Deleting account for child:', mockChild.id)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+  // Fetch child data with ownership verification
+  const child = await prisma.child.findFirst({
+    where: {
+      id: childId,
+      parentId: session.user.id, // Ownership verification
+    },
+    select: {
+      id: true,
+      nickname: true,
+      age: true,
+      freeTextEnabled: true,
+      challengesEnabled: true,
+    },
+  })
+
+  if (!child) {
+    redirect('/parent/dashboard')
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Controls</h1>
-        <p className="text-gray-600">
-          Manage permissions and data for {mockChild.nickname}.
-        </p>
-      </div>
-
-      {/* Parent Gate Banner */}
-      <ParentGateBanner className="mb-6" />
-
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="permissions">Permissions</TabsTrigger>
-          <TabsTrigger value="data">Data & Privacy</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="permissions">
-          <div className="py-6">
-            <FeaturePermissionsPanel
-              childId={mockChild.id}
-              childAge={mockChild.age}
-              initialPermissions={{
-                freeTextEnabled: false,
-                challengesEnabled: true,
-              }}
-              onSave={handleSavePermissions}
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="data">
-          <div className="py-6">
-            <DataExportDeletePanel
-              childId={mockChild.id}
-              childNickname={mockChild.nickname}
-              onExport={handleExportData}
-              onDelete={handleDeleteAccount}
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
+  return <ParentControlsContent child={child} />
 }
