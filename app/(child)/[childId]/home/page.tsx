@@ -9,16 +9,16 @@ const mockSuggestedDrills = [
   {
     id: '1',
     title: 'First Touch Control',
+    category: 'Ball Control',
     difficulty: 'intermediate' as const,
-    equipment: ['Ball', 'Wall'],
-    timeMinutes: 15,
+    duration: 15,
   },
   {
     id: '2',
     title: 'Passing Accuracy',
+    category: 'Passing',
     difficulty: 'beginner' as const,
-    equipment: ['Ball', 'Cones'],
-    timeMinutes: 10,
+    duration: 10,
   },
 ]
 
@@ -126,12 +126,11 @@ export default async function ChildHomePage({ params }: ChildHomePageProps) {
           {mockSuggestedDrills.map((drill) => (
             <DrillCard
               key={drill.id}
-              id={drill.id}
               title={drill.title}
+              category={drill.category}
               difficulty={drill.difficulty}
-              equipment={drill.equipment}
-              timeMinutes={drill.timeMinutes}
-              onClick={() => {
+              duration={drill.duration}
+              onSelect={() => {
                 // TODO: Navigate to drill details or training
                 console.log(`Selected drill: ${drill.id}`)
               }}
