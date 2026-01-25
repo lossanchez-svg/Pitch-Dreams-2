@@ -96,7 +96,7 @@ export function DrillCard({
               onSelect()
             }}
             className="w-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-base"
-            variant="outline"
+            variant="secondary"
           >
             Select Drill
           </Button>
