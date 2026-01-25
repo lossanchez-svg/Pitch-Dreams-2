@@ -11,7 +11,17 @@
       "Bash(chmod:*)",
       "Bash(./install-and-push.sh)",
       "Bash(git branch:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(echo:*)",
+      "Bash(npm run db:generate:*)",
+      "Bash(export PATH:*)",
+      "Bash(node --version:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run db:push:*)",
+      "Bash(ls:*)",
+      "Bash(tree:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }

@@ -1,0 +1,146 @@
+'use client'
+
+import { useState } from 'react'
+import { ArrowLeft, Sparkles } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { Card } from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
+import { RpeSlider, MoodPicker, ChoiceChips, winPresets, focusPresets } from '@/components/pitchdreams'
+
+export default function ChildLogPage() {
+  const router = useRouter()
+  const [rpe, setRpe] = useState(5)
+  const [mood, setMood] = useState<string>('')
+  const [wins, setWins] = useState<string[]>([])
+  const [focus, setFocus] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+
+    // TODO: Replace with actual Prisma mutation
+    console.log('Logging session:', { rpe, mood, wins, focus })
+
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // TODO: Show CompletionToast with confetti
+    alert('Logged. Your future self just got better.')
+
+    // Navigate back to home
+    router.push('../home')
+  }
+
+  const isComplete = rpe > 0 && mood && wins.length > 0 && focus.length > 0
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-3xl">
+      {/* Header */}
+      <div className="mb-8">
+        <Link
+          href="../home"
+          className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 transition-colors mb-4"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Link>
+        <div className="hud-label mb-2">Session Logger</div>
+        <h1 className="font-display text-5xl text-primary-400 mb-2">
+          Log Your Session
+        </h1>
+        <p className="text-gray-300">
+          Capture what you did. Track your progress.
+        </p>
+      </div>
+
+      {/* Logging Form */}
+      <div className="space-y-8">
+        {/* RPE Slider */}
+        <Card variant="hud-panel" className="p-6">
+          <div className="hud-label mb-4">How Hard Was It?</div>
+          <RpeSlider
+            value={rpe}
+            onChange={setRpe}
+          />
+        </Card>
+
+        {/* Mood Picker */}
+        <Card variant="hud-panel" className="p-6">
+          <div className="hud-label mb-4">How Did You Feel?</div>
+          <MoodPicker
+            selectedMood={mood}
+            onSelect={setMood}
+          />
+        </Card>
+
+        {/* Wins */}
+        <Card variant="hud-panel" className="p-6">
+          <div className="hud-label mb-4">What Went Well?</div>
+          <p className="text-sm text-gray-400 mb-4">
+            Select up to 3 wins from this session.
+          </p>
+          <ChoiceChips
+            options={winPresets}
+            selected={wins}
+            onSelect={setWins}
+            maxSelections={3}
+          />
+        </Card>
+
+        {/* Focus Areas */}
+        <Card variant="hud-panel" className="p-6">
+          <div className="hud-label mb-4">What to Focus On Next?</div>
+          <p className="text-sm text-gray-400 mb-4">
+            Select up to 2 areas to work on.
+          </p>
+          <ChoiceChips
+            options={focusPresets}
+            selected={focus}
+            onSelect={setFocus}
+            maxSelections={2}
+          />
+        </Card>
+
+        {/* Submit Button */}
+        <Card variant="hud" className="hud-scanline p-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <div className="hud-label mb-1">Ready to Submit?</div>
+              <p className="text-gray-300">
+                {isComplete
+                  ? 'All fields complete. Lock it in.'
+                  : 'Please complete all fields above.'}
+              </p>
+            </div>
+            <Button
+              variant="hud"
+              size="lg"
+              onClick={handleSubmit}
+              disabled={!isComplete || isSubmitting}
+              className="min-w-[200px]"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Lock it in
+                </>
+              )}
+            </Button>
+          </div>
+        </Card>
+      </div>
+
+      {/* Footer Quote */}
+      <div className="text-center mt-16 pt-8 border-t border-gray-800">
+        <p className="text-gray-500 text-sm italic">
+          "Nice work. That's one brick in your foundation."
+        </p>
+      </div>
+    </div>
+  )
+}

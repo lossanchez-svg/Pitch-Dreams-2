@@ -48,6 +48,96 @@ export default function StyleguidePage() {
           </div>
         </div>
 
+        {/* HUD Design System Showcase - NEW! */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+            🎮 HUD Design System (Neo-Futuristic)
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-8">
+            Training simulator aesthetics inspired by mecha/anime HUD interfaces. Used in child training modes.
+          </p>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* HUD Frame Example */}
+            <Card variant="hud" className="hud-scanline">
+              <div className="hud-label mb-4">System Status</div>
+              <h3 className="font-display text-2xl text-primary-400 mb-4">
+                Welcome back, player.
+              </h3>
+              <div className="flex gap-2 flex-wrap">
+                <div className="hud-chip">
+                  <Flame className="h-4 w-4" />
+                  5 Day Streak
+                </div>
+                <div className="hud-chip">
+                  <Trophy className="h-4 w-4" />
+                  12 Sessions
+                </div>
+              </div>
+            </Card>
+
+            {/* Pitch Lines Example */}
+            <div className="pitch-lines hud-panel rounded-lg p-6">
+              <div className="hud-label mb-4">Training Arena</div>
+              <h3 className="font-display text-2xl text-accent-400 mb-4">
+                Lock it in.
+              </h3>
+              <p className="text-gray-300">
+                Pitch line geometry overlay creates the feel of being on the field.
+              </p>
+            </div>
+          </div>
+
+          {/* HUD Utilities Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="hud-frame p-4">
+              <code className="text-xs text-primary-400">.hud-frame</code>
+              <p className="text-sm text-gray-300 mt-2">Clipped corners with cyan border</p>
+            </div>
+            <div className="hud-panel p-4 rounded-lg">
+              <code className="text-xs text-primary-400">.hud-panel</code>
+              <p className="text-sm text-gray-300 mt-2">Semi-transparent with backdrop blur</p>
+            </div>
+            <div className="hud-grid p-4 bg-gray-900 rounded-lg">
+              <code className="text-xs text-primary-400">.hud-grid</code>
+              <p className="text-sm text-gray-300 mt-2">Subtle tactical grid pattern</p>
+            </div>
+          </div>
+
+          {/* HUD Buttons */}
+          <div className="flex gap-4 flex-wrap mb-8">
+            <Button variant="hud" size="md">
+              Lock it in
+            </Button>
+            <Button variant="hud" size="lg">
+              Start Session
+            </Button>
+            <Button variant="primary" size="md" className="hud-glow-cyan">
+              With Glow
+            </Button>
+          </div>
+
+          {/* Font Specimens */}
+          <div className="space-y-4 bg-gray-900 p-6 rounded-lg">
+            <div>
+              <span className="text-xs text-gray-500 font-mono">font-display (Rajdhani)</span>
+              <h3 className="font-display text-3xl text-primary-400">TRAINING MODE ACTIVE</h3>
+            </div>
+            <div>
+              <span className="text-xs text-gray-500 font-mono">font-mono (JetBrains Mono)</span>
+              <div className="font-mono text-lg text-accent-400">SESSION_TIMER: 15:00</div>
+            </div>
+            <div>
+              <span className="text-xs text-gray-500 font-mono">hud-chip</span>
+              <div className="flex gap-2 mt-2">
+                <span className="hud-chip">CONSISTENCY: 85%</span>
+                <span className="hud-chip">RPE: 7/10</span>
+                <span className="hud-chip">PB: 45 REPS</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Color Palette */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">

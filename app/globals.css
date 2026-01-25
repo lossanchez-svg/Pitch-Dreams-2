@@ -8,47 +8,70 @@
   --background-rgb: 255, 255, 255;
 
   /* PitchDreams semantic tokens */
-  --pd-training-energy: 59 130 246; /* primary-500 */
-  --pd-progress-win: 34 197 94; /* accent-500 */
+  --pd-training-energy: 6 182 212; /* cyan-500 */
+  --pd-progress-win: 132 204 22; /* lime-500 */
   --pd-trust-parent: 99 102 241; /* indigo-500 */
   --pd-surface-base: 255 255 255;
-  --pd-surface-elevated: 250 250 249; /* gray-50 */
+  --pd-surface-elevated: 250 250 250; /* gray-50 */
   --pd-surface-card: 255 255 255;
-  --pd-border-subtle: 231 229 228; /* gray-200 */
-  --pd-text-primary: 28 25 23; /* gray-900 */
-  --pd-text-secondary: 87 83 78; /* gray-600 */
-  --pd-text-tertiary: 168 162 158; /* gray-400 */
+  --pd-border-subtle: 228 228 231; /* gray-200 */
+  --pd-text-primary: 24 24 27; /* gray-900 */
+  --pd-text-secondary: 82 82 91; /* gray-600 */
+  --pd-text-tertiary: 161 161 170; /* gray-400 */
 
   /* Interaction states */
   --pd-hover-overlay: 0 0 0 / 0.04;
   --pd-press-overlay: 0 0 0 / 0.08;
-  --pd-focus-ring: 59 130 246; /* primary-500 */
+  --pd-focus-ring: 6 182 212; /* cyan-500 */
 
   /* Animation durations (respects prefers-reduced-motion) */
   --pd-duration-fast: 150ms;
   --pd-duration-base: 200ms;
   --pd-duration-slow: 300ms;
   --pd-duration-delight: 800ms;
+
+  /* HUD-specific variables (Neo-Futuristic Aesthetic) */
+  --hud-cyan: 6 182 212;
+  --hud-cyan-glow: rgba(6, 182, 212, 0.4);
+  --hud-lime: 132 204 22;
+  --hud-lime-glow: rgba(132, 204 22, 0.4);
+  --hud-magenta: 217 70 239;
+  --hud-magenta-glow: rgba(217, 70, 239, 0.4);
+
+  /* HUD Geometry */
+  --hud-border: 1px;
+  --hud-corner-clip: 0.5rem;
+  --hud-grid-size: 4px;
+  --hud-scanline-speed: 4s;
+
+  /* HUD Layers */
+  --hud-backdrop: rgba(9, 9, 11, 0.95);
+  --hud-panel: rgba(24, 24, 27, 0.9);
+  --hud-overlay: rgba(6, 182, 212, 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 249, 250, 251;
-    --background-rgb: 31, 41, 55;
+    --foreground-rgb: 250, 250, 250;
+    --background-rgb: 9, 9, 11;
 
-    /* Dark mode overrides */
-    --pd-training-energy: 96 165 250; /* primary-400 */
-    --pd-progress-win: 74 222 128; /* accent-400 */
+    /* Dark mode overrides (Child HUD mode) */
+    --pd-training-energy: 34 211 238; /* cyan-400 */
+    --pd-progress-win: 163 230 53; /* lime-400 */
     --pd-trust-parent: 129 140 248;
-    --pd-surface-base: 28 25 23; /* gray-900 */
-    --pd-surface-elevated: 41 37 36; /* gray-800 */
-    --pd-surface-card: 41 37 36;
-    --pd-border-subtle: 68 64 60; /* gray-700 */
-    --pd-text-primary: 250 250 249; /* gray-50 */
-    --pd-text-secondary: 214 211 209; /* gray-300 */
-    --pd-text-tertiary: 168 162 158; /* gray-400 */
+    --pd-surface-base: 9 9 11; /* gray-950 */
+    --pd-surface-elevated: 24 24 27; /* gray-900 */
+    --pd-surface-card: 24 24 27;
+    --pd-border-subtle: 63 63 70; /* gray-700 */
+    --pd-text-primary: 250 250 250; /* gray-50 */
+    --pd-text-secondary: 212 212 216; /* gray-300 */
+    --pd-text-tertiary: 161 161 170; /* gray-400 */
     --pd-hover-overlay: 255 255 255 / 0.06;
     --pd-press-overlay: 255 255 255 / 0.12;
+
+    /* HUD Layers (darker for child mode) */
+    --hud-backdrop: rgba(9, 9, 11, 0.98);
+    --hud-panel: rgba(24, 24, 27, 0.95);
   }
 }
 
@@ -86,6 +109,121 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* HUD Frame - clipped corners with cyan border */
+  .hud-frame {
+    position: relative;
+    border: var(--hud-border) solid rgb(var(--hud-cyan));
+    clip-path: polygon(
+      0 var(--hud-corner-clip),
+      var(--hud-corner-clip) 0,
+      calc(100% - var(--hud-corner-clip)) 0,
+      100% var(--hud-corner-clip),
+      100% calc(100% - var(--hud-corner-clip)),
+      calc(100% - var(--hud-corner-clip)) 100%,
+      var(--hud-corner-clip) 100%,
+      0 calc(100% - var(--hud-corner-clip))
+    );
+  }
+
+  /* HUD Panel - semi-transparent dark background */
+  .hud-panel {
+    background: var(--hud-panel);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* HUD Grid Overlay */
+  .hud-grid {
+    background-image:
+      linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+    background-size: var(--hud-grid-size) var(--hud-grid-size);
+  }
+
+  /* HUD Scan Line Animation */
+  .hud-scanline {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hud-scanline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(6, 182, 212, 0.6),
+      transparent
+    );
+    animation: scan-line var(--hud-scanline-speed) linear infinite;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* HUD Glow Effects */
+  .hud-glow-cyan {
+    box-shadow: 0 0 20px var(--hud-cyan-glow);
+  }
+
+  .hud-glow-lime {
+    box-shadow: 0 0 20px var(--hud-lime-glow);
+  }
+
+  .hud-glow-magenta {
+    box-shadow: 0 0 20px var(--hud-magenta-glow);
+  }
+
+  /* HUD Section Label - uppercase tech label */
+  .hud-label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgb(var(--hud-cyan));
+  }
+
+  /* HUD Data Chip - inline stat display */
+  .hud-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid rgb(var(--hud-cyan) / 0.3);
+    border-radius: 0.25rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgb(var(--hud-cyan));
+  }
+
+  /* Pitch Line Geometry - football field overlay */
+  .pitch-lines {
+    position: relative;
+  }
+
+  .pitch-lines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, transparent 49.5%, rgba(6, 182, 212, 0.1) 49.5%, rgba(6, 182, 212, 0.1) 50.5%, transparent 50.5%),
+      linear-gradient(to bottom, transparent 24.5%, rgba(6, 182, 212, 0.05) 24.5%, rgba(6, 182, 212, 0.05) 25.5%, transparent 25.5%),
+      linear-gradient(to bottom, transparent 74.5%, rgba(6, 182, 212, 0.05) 74.5%, rgba(6, 182, 212, 0.05) 75.5%, transparent 75.5%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .pitch-lines > * {
+    position: relative;
+    z-index: 2;
   }
 }
 
