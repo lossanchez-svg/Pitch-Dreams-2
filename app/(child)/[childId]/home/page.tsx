@@ -1,3 +1,5 @@
+'use client'
+
 import { Flame, Trophy, Target } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
@@ -28,7 +30,7 @@ interface ChildHomePageProps {
   }
 }
 
-export default async function ChildHomePage({ params }: ChildHomePageProps) {
+export default function ChildHomePage({ params }: ChildHomePageProps) {
   // TODO: Replace with actual data fetching
   // const child = await prisma.child.findUnique({
   //   where: { id: params.childId },

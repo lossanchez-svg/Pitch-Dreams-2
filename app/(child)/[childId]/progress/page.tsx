@@ -1,3 +1,5 @@
+'use client'
+
 import { TrendingUp, Calendar, Trophy, Target } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { ConsistencyRingCard } from '@/components/pitchdreams'
@@ -24,7 +26,7 @@ const mockRecentSessions = [
   { date: '2024-01-16', rpe: 7, mood: 'Confident', duration: 30 },
 ]
 
-export default async function ChildProgressPage() {
+export default function ChildProgressPage() {
   // TODO: Replace with actual Prisma queries
   // const sessions = await prisma.session.findMany({
   //   where: { childId: params.childId },

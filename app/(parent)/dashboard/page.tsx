@@ -1,3 +1,5 @@
+'use client'
+
 import { ChildProfileCard, ParentTrustCard } from '@/components/pitchdreams'
 
 // This will be replaced with actual data fetching from Prisma
@@ -23,7 +25,7 @@ const mockChildren = [
   },
 ]
 
-export default async function ParentDashboardPage() {
+export default function ParentDashboardPage() {
   // TODO: Replace with actual Prisma query
   // const session = await getServerSession(authOptions)
   // const children = await prisma.child.findMany({
