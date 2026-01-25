@@ -3,13 +3,17 @@
 import { useState } from 'react'
 import { ArrowLeft, Sparkles } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import { RpeSlider, MoodPicker, ChoiceChips, winPresets, focusPresets } from '@/components/pitchdreams'
+import { saveSession } from './actions'
 
 export default function ChildLogPage() {
   const router = useRouter()
+  const params = useParams()
+  const childId = params.childId as string
+
   const [rpe, setRpe] = useState(5)
   const [mood, setMood] = useState<'great' | 'good' | 'okay' | 'tired' | 'off' | null>(null)
   const [wins, setWins] = useState<string[]>([])
@@ -17,18 +21,30 @@ export default function ChildLogPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async () => {
+    if (!mood) return
+
     setIsSubmitting(true)
 
-    // TODO: Replace with actual Prisma mutation
-    console.log('Logging session:', { rpe, mood, wins, focus })
+    try {
+      await saveSession(childId, {
+        rpe,
+        mood,
+        duration: 25, // Default duration, could be tracked from timer
+        wins,
+        focusAreas: focus,
+      })
 
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+      // TODO: Show CompletionToast with confetti
+      alert('Logged. Your future self just got better.')
 
-    // TODO: Show CompletionToast with confetti
-    alert('Logged. Your future self just got better.')
-
-    // Navigate back to home
-    router.push('../home')
+      // Navigate back to home
+      router.push(`/child/${childId}/home`)
+      router.refresh()
+    } catch (error) {
+      console.error('Failed to save session:', error)
+      alert('Failed to save session. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   const isComplete = rpe > 0 && mood && wins.length > 0 && focus.length > 0
