@@ -3,7 +3,14 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import { Dialog } from '@/components/ui/Dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/Dialog'
 import { Download, Trash2, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -128,47 +135,50 @@ export function DataExportDeletePanel({
       </Card>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        title="Delete Account"
-        description={`Are you sure you want to permanently delete ${childNickname}'s account? All training sessions, progress data, and account information will be permanently removed.`}
-      >
-        <div className="space-y-4">
-          {/* Warning */}
-          <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-lg p-4">
-            <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Account</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to permanently delete {childNickname}'s account? All training sessions, progress data, and account information will be permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {/* Warning */}
+            <div className="flex items-start gap-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+              <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-red-900 dark:text-red-100 mb-1">
+                  This action cannot be undone
+                </p>
+                <p className="text-sm text-red-800 dark:text-red-200">
+                  All data will be permanently deleted from our servers. You will not be able to recover this information.
+                </p>
+              </div>
+            </div>
+
+            {/* Confirmation Input */}
             <div>
-              <p className="text-sm font-medium text-red-900 mb-1">
-                This action cannot be undone
-              </p>
-              <p className="text-sm text-red-800">
-                All data will be permanently deleted from our servers. You will not be able to recover this information.
-              </p>
+              <label
+                htmlFor="delete-confirm"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
+                Type <span className="font-mono font-bold">DELETE</span> to confirm:
+              </label>
+              <input
+                id="delete-confirm"
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="DELETE"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                autoComplete="off"
+              />
             </div>
           </div>
 
-          {/* Confirmation Input */}
-          <div>
-            <label
-              htmlFor="delete-confirm"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Type <span className="font-mono font-bold">DELETE</span> to confirm:
-            </label>
-            <input
-              id="delete-confirm"
-              type="text"
-              value={deleteConfirmText}
-              onChange={(e) => setDeleteConfirmText(e.target.value)}
-              placeholder="DELETE"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              autoComplete="off"
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-3 justify-end">
+          <DialogFooter>
             <Button
               variant="ghost"
               onClick={() => {
@@ -196,8 +206,8 @@ export function DataExportDeletePanel({
                 </>
               )}
             </Button>
-          </div>
-        </div>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </>
   )
