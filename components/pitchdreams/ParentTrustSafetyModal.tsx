@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Shield, Lock, Users, Target, TrendingUp, Mail, Check } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import Button from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
 interface ParentTrustSafetyModalProps {
