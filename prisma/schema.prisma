@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // Use "postgresql" for production
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -74,7 +74,7 @@ model ChildProfile {
   nickname    String
   age         Int
   position    String?
-  goals       String // JSON string for SQLite, or Json type for Postgres
+  goals       Json // JSON array of selected goals
   avatarColor String @default("#3B82F6")
 
   freeTextEnabled     Boolean @default(false)
@@ -129,7 +129,7 @@ model Lesson {
   ageMin      Int    @default(8)
   ageMax      Int    @default(18)
 
-  quizQuestions String // JSON string
+  quizQuestions Json // JSON array of quiz questions
 
   progress LessonProgress[]
 
