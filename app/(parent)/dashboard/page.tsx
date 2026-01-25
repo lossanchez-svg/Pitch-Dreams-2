@@ -57,10 +57,10 @@ export default async function ParentDashboardPage() {
   }
 
   // Fetch children with their sessions
-  const children = await prisma.child.findMany({
+  const children = await prisma.childProfile.findMany({
     where: { parentId: session.user.id },
     include: {
-      sessions: {
+      sessionLogs: {
         orderBy: { createdAt: 'desc' },
         select: {
           id: true,
@@ -76,11 +76,11 @@ export default async function ParentDashboardPage() {
     nickname: child.nickname,
     age: child.age,
     position: child.position,
-    avatarColor: avatarColors[index % avatarColors.length],
-    sessionCount: child.sessions.filter(
+    avatarColor: child.avatarColor,
+    sessionCount: child.sessionLogs.filter(
       s => new Date(s.createdAt) >= startOfMonth(new Date())
     ).length,
-    currentStreak: calculateStreak(child.sessions),
+    currentStreak: calculateStreak(child.sessionLogs),
   }))
 
   return <ParentDashboardContent children={childrenData} />

@@ -13,7 +13,7 @@ export default async function ChildHomePage({ params }: ChildHomePageProps) {
   await verifyChildOwnership(params.childId)
 
   // Fetch sessions for streak calculation
-  const sessions = await prisma.session.findMany({
+  const sessions = await prisma.sessionLog.findMany({
     where: { childId: params.childId },
     orderBy: { createdAt: 'desc' },
     select: {
@@ -34,19 +34,19 @@ export default async function ChildHomePage({ params }: ChildHomePageProps) {
     },
     select: {
       id: true,
-      title: true,
+      name: true,
       category: true,
       difficulty: true,
-      timeMinutes: true,
+      duration: true,
     },
   })
 
   const drillsData = suggestedDrills.map(drill => ({
     id: drill.id,
-    title: drill.title,
+    title: drill.name,
     category: drill.category,
     difficulty: drill.difficulty as 'beginner' | 'intermediate' | 'advanced',
-    duration: drill.timeMinutes,
+    duration: drill.duration || 20,
   }))
 
   return (

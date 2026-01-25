@@ -9,7 +9,6 @@ export async function updateChildPermissions(
   childId: string,
   permissions: {
     freeTextEnabled: boolean
-    challengesEnabled: boolean
   }
 ) {
   const session = await getServerSession(authOptions)
@@ -19,7 +18,7 @@ export async function updateChildPermissions(
   }
 
   // Verify parent owns this child
-  const child = await prisma.child.findFirst({
+  const child = await prisma.childProfile.findFirst({
     where: {
       id: childId,
       parentId: session.user.id,
@@ -31,11 +30,10 @@ export async function updateChildPermissions(
   }
 
   // Update permissions
-  await prisma.child.update({
+  await prisma.childProfile.update({
     where: { id: childId },
     data: {
       freeTextEnabled: permissions.freeTextEnabled,
-      challengesEnabled: permissions.challengesEnabled,
     },
   })
 
@@ -51,18 +49,13 @@ export async function exportChildData(childId: string) {
   }
 
   // Verify parent owns this child
-  const child = await prisma.child.findFirst({
+  const child = await prisma.childProfile.findFirst({
     where: {
       id: childId,
       parentId: session.user.id,
     },
     include: {
-      sessions: {
-        include: {
-          drill: true,
-          sessionWins: true,
-          sessionFocusAreas: true,
-        },
+      sessionLogs: {
         orderBy: { createdAt: 'desc' },
       },
     },
@@ -80,15 +73,14 @@ export async function exportChildData(childId: string) {
       position: child.position,
       createdAt: child.createdAt,
     },
-    sessions: child.sessions.map(s => ({
+    sessions: child.sessionLogs.map(s => ({
       date: s.createdAt,
-      drillTitle: s.drill?.title,
-      rpe: s.rpe,
+      activityType: s.activityType,
+      effortLevel: s.effortLevel,
       mood: s.mood,
       duration: s.duration,
-      reps: s.reps,
-      wins: s.sessionWins.map(w => w.win),
-      focusAreas: s.sessionFocusAreas.map(f => f.focusArea),
+      win: s.win,
+      focus: s.focus,
     })),
     exportedAt: new Date().toISOString(),
   }
@@ -102,7 +94,7 @@ export async function deleteChildAccount(childId: string) {
   }
 
   // Verify parent owns this child
-  const child = await prisma.child.findFirst({
+  const child = await prisma.childProfile.findFirst({
     where: {
       id: childId,
       parentId: session.user.id,
@@ -114,7 +106,7 @@ export async function deleteChildAccount(childId: string) {
   }
 
   // Delete child (cascade will handle related records)
-  await prisma.child.delete({
+  await prisma.childProfile.delete({
     where: { id: childId },
   })
 

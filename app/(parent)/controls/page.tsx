@@ -21,7 +21,7 @@ export default async function ParentControlsPage({ searchParams }: ParentControl
   let childId = searchParams.childId
 
   if (!childId) {
-    const firstChild = await prisma.child.findFirst({
+    const firstChild = await prisma.childProfile.findFirst({
       where: { parentId: session.user.id },
       select: { id: true },
     })
@@ -34,7 +34,7 @@ export default async function ParentControlsPage({ searchParams }: ParentControl
   }
 
   // Fetch child data with ownership verification
-  const child = await prisma.child.findFirst({
+  const child = await prisma.childProfile.findFirst({
     where: {
       id: childId,
       parentId: session.user.id, // Ownership verification
@@ -44,7 +44,6 @@ export default async function ParentControlsPage({ searchParams }: ParentControl
       nickname: true,
       age: true,
       freeTextEnabled: true,
-      challengesEnabled: true,
     },
   })
 

@@ -14,7 +14,7 @@ export async function verifyChildOwnership(childId: string) {
     redirect('/login')
   }
 
-  const child = await prisma.child.findFirst({
+  const child = await prisma.childProfile.findFirst({
     where: {
       id: childId,
       parentId: session.user.id,

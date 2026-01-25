@@ -16,16 +16,9 @@ export default async function ChildProgressPage({ params }: ChildProgressPagePro
   await verifyChildOwnership(params.childId)
 
   // Fetch all sessions with related data
-  const sessions = await prisma.session.findMany({
+  const sessions = await prisma.sessionLog.findMany({
     where: { childId: params.childId },
     orderBy: { createdAt: 'desc' },
-    include: {
-      drill: {
-        select: {
-          title: true,
-        },
-      },
-    },
   })
 
   // Calculate stats
@@ -38,9 +31,9 @@ export default async function ChildProgressPage({ params }: ChildProgressPagePro
     s => new Date(s.createdAt) >= startOfWeek(new Date())
   ).length
 
-  // Calculate average RPE
+  // Calculate average effort level
   const avgRpe = sessions.length > 0
-    ? (sessions.reduce((sum, s) => sum + (s.rpe || 0), 0) / sessions.length).toFixed(1)
+    ? (sessions.reduce((sum, s) => sum + (s.effortLevel || 0), 0) / sessions.length).toFixed(1)
     : '0.0'
 
   // Calculate total training minutes
@@ -52,8 +45,8 @@ export default async function ChildProgressPage({ params }: ChildProgressPagePro
   // Get recent sessions for display
   const recentSessions = sessions.slice(0, 5).map(s => ({
     date: new Date(s.createdAt).toLocaleDateString(),
-    drill: s.drill?.title || 'Training Session',
-    rpe: s.rpe || 0,
+    drill: s.activityType || 'Training Session',
+    rpe: s.effortLevel || 0,
     mood: s.mood || 'N/A',
     duration: s.duration || 0,
   }))

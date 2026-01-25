@@ -27,11 +27,11 @@ export default function ChildLogPage() {
 
     try {
       await saveSession(childId, {
-        rpe,
+        effortLevel: rpe,
         mood,
         duration: 25, // Default duration, could be tracked from timer
-        wins,
-        focusAreas: focus,
+        win: wins.join(', '),
+        focus: focus.join(', '),
       })
 
       // TODO: Show CompletionToast with confetti

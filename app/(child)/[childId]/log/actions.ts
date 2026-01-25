@@ -7,33 +7,27 @@ import { revalidatePath } from 'next/cache'
 export async function saveSession(
   childId: string,
   data: {
-    drillId?: string
-    rpe: number
-    mood: 'great' | 'good' | 'okay' | 'tired' | 'off'
+    activityType?: string
+    effortLevel: number
+    mood: string
     duration: number
-    reps?: number
-    wins: string[]
-    focusAreas: string[]
+    win?: string
+    focus?: string
   }
 ) {
   // Verify ownership
   await verifyChildOwnership(childId)
 
-  // Create session
-  const session = await prisma.session.create({
+  // Create session log
+  const session = await prisma.sessionLog.create({
     data: {
       childId,
-      drillId: data.drillId || null,
-      rpe: data.rpe,
+      activityType: data.activityType || 'Training',
+      effortLevel: data.effortLevel,
       mood: data.mood,
       duration: data.duration,
-      reps: data.reps || null,
-      sessionWins: {
-        create: data.wins.map(win => ({ win })),
-      },
-      sessionFocusAreas: {
-        create: data.focusAreas.map(focusArea => ({ focusArea })),
-      },
+      win: data.win || null,
+      focus: data.focus || null,
     },
   })
 
