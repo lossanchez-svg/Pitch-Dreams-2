@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Tabs } from '@/components/ui/Tabs'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs'
 import {
   FeaturePermissionsPanel,
   DataExportDeletePanel,
@@ -50,16 +50,13 @@ export default function ParentControlsPage() {
       <ParentGateBanner className="mb-6" />
 
       {/* Tabs */}
-      <Tabs
-        value={activeTab}
-        onValueChange={setActiveTab}
-        tabs={[
-          { value: 'permissions', label: 'Permissions' },
-          { value: 'data', label: 'Data & Privacy' },
-        ]}
-      >
-        {/* Permissions Tab */}
-        {activeTab === 'permissions' && (
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList>
+          <TabsTrigger value="permissions">Permissions</TabsTrigger>
+          <TabsTrigger value="data">Data & Privacy</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="permissions">
           <div className="py-6">
             <FeaturePermissionsPanel
               childId={mockChild.id}
@@ -71,10 +68,9 @@ export default function ParentControlsPage() {
               onSave={handleSavePermissions}
             />
           </div>
-        )}
+        </TabsContent>
 
-        {/* Data & Privacy Tab */}
-        {activeTab === 'data' && (
+        <TabsContent value="data">
           <div className="py-6">
             <DataExportDeletePanel
               childId={mockChild.id}
@@ -83,7 +79,7 @@ export default function ParentControlsPage() {
               onDelete={handleDeleteAccount}
             />
           </div>
-        )}
+        </TabsContent>
       </Tabs>
     </div>
   )
