@@ -11,7 +11,7 @@ import { RpeSlider, MoodPicker, ChoiceChips, winPresets, focusPresets } from '@/
 export default function ChildLogPage() {
   const router = useRouter()
   const [rpe, setRpe] = useState(5)
-  const [mood, setMood] = useState<string>('')
+  const [mood, setMood] = useState<'great' | 'good' | 'okay' | 'tired' | 'off' | null>(null)
   const [wins, setWins] = useState<string[]>([])
   const [focus, setFocus] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -68,8 +68,8 @@ export default function ChildLogPage() {
         <Card variant="hud-panel" className="p-6">
           <div className="hud-label mb-4">How Did You Feel?</div>
           <MoodPicker
-            selectedMood={mood}
-            onSelect={setMood}
+            value={mood}
+            onChange={setMood}
           />
         </Card>
 
