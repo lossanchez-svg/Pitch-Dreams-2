@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 import { Shield, ArrowRight, ArrowLeft } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -125,18 +126,20 @@ export default function ParentOnboarding() {
         throw new Error('Failed to create child profile')
       }
 
-      // Sign in
-      const signInRes = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      // Sign in using NextAuth
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
       })
 
-      if (!signInRes.ok) {
+      if (result?.error) {
         throw new Error('Account created but sign-in failed. Please log in manually.')
       }
 
+      // Successful login - redirect to dashboard
       router.push('/parent/dashboard')
+      router.refresh()
     } catch (err: any) {
       setError(err.message || 'Something went wrong')
       setLoading(false)
