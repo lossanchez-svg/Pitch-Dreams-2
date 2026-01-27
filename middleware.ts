@@ -6,12 +6,16 @@ export default withAuth(
     const token = req.nextauth.token
     const path = req.nextUrl.pathname
 
-    // Allow access to login and onboarding pages
-    if (path.startsWith('/login') || path === '/parent/onboarding') {
+    // Allow access to login, onboarding pages, and public APIs
+    if (
+      path.startsWith('/login') ||
+      path === '/parent/onboarding' ||
+      path === '/api/parent/children'
+    ) {
       return NextResponse.next()
     }
 
-    // Protect parent routes (except onboarding)
+    // Protect parent routes (except onboarding and APIs)
     if (path.startsWith('/parent')) {
       if (!token) {
         return NextResponse.redirect(new URL('/login', req.url))
@@ -60,7 +64,8 @@ export default withAuth(
           path.startsWith('/hud-demo') ||
           path.startsWith('/components-demo') ||
           path.startsWith('/privacy') ||
-          path.startsWith('/api/auth')
+          path.startsWith('/api/auth') ||
+          path === '/api/parent/children'
         ) {
           return true
         }
