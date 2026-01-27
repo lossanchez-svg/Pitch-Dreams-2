@@ -67,8 +67,8 @@ export default async function ChildProgressPage({ params }: ChildProgressPagePro
       {/* Consistency Ring */}
       <div className="mb-8">
         <ConsistencyRingCard
-          sessionsThisWeek={thisWeekSessions}
-          targetSessions={7}
+          streak={currentStreak}
+          maxStreak={30}
         />
       </div>
 

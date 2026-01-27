@@ -15,7 +15,6 @@ interface Child {
   nickname: string
   age: number
   freeTextEnabled: boolean
-  challengesEnabled: boolean
 }
 
 interface ParentControlsContentProps {
@@ -28,7 +27,6 @@ export function ParentControlsContent({ child }: ParentControlsContentProps) {
 
   const handleSavePermissions = async (permissions: {
     freeTextEnabled: boolean
-    challengesEnabled: boolean
   }) => {
     await updateChildPermissions(child.id, permissions)
   }
@@ -81,7 +79,6 @@ export function ParentControlsContent({ child }: ParentControlsContentProps) {
               childAge={child.age}
               initialPermissions={{
                 freeTextEnabled: child.freeTextEnabled,
-                challengesEnabled: child.challengesEnabled,
               }}
               onSave={handleSavePermissions}
             />

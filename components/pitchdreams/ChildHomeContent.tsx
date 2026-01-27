@@ -55,8 +55,8 @@ export function ChildHomeContent({
         {/* Consistency Ring */}
         <div className="md:col-span-2">
           <ConsistencyRingCard
-            sessionsThisWeek={currentStreak >= 7 ? 7 : currentStreak}
-            targetSessions={7}
+            streak={currentStreak}
+            maxStreak={30}
           />
         </div>
       </div>

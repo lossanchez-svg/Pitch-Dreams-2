@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils'
 
 interface FeaturePermissions {
   freeTextEnabled: boolean
-  challengesEnabled: boolean
   trainingWindowStart?: string // HH:MM format
   trainingWindowEnd?: string // HH:MM format
 }
@@ -26,7 +25,6 @@ export function FeaturePermissionsPanel({
   childAge,
   initialPermissions = {
     freeTextEnabled: false,
-    challengesEnabled: true,
   },
   onSave,
   className,
@@ -112,29 +110,6 @@ export function FeaturePermissionsPanel({
           />
         </div>
 
-        {/* Challenges Permission */}
-        <div className="flex items-start gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <Trophy className="h-5 w-5 text-gray-700" />
-              <label
-                htmlFor={`challenges-${childId}`}
-                className="font-medium text-gray-900"
-              >
-                Skill Challenges
-              </label>
-            </div>
-            <p className="text-sm text-gray-600">
-              Allow your child to attempt timed skill challenges.
-            </p>
-          </div>
-          <Switch
-            id={`challenges-${childId}`}
-            checked={permissions.challengesEnabled}
-            onCheckedChange={(checked) => handleToggle('challengesEnabled', checked)}
-            disabled={saving}
-          />
-        </div>
 
         {/* Training Window */}
         <div>
