@@ -1,6 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { Plus } from 'lucide-react'
+import Button from '@/components/ui/Button'
 import { ChildProfileCard, ParentTrustCard } from '@/components/pitchdreams'
 
 interface Child {
@@ -43,9 +45,19 @@ export function ParentDashboardContent({ children }: ParentDashboardContentProps
       {/* Children Grid */}
       {children.length > 0 ? (
         <div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">
-            Your Children
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Your Children
+            </h2>
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => router.push('/parent/add-child')}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Child
+            </Button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {children.map((child) => (
               <ChildProfileCard
