@@ -6,12 +6,12 @@ export default withAuth(
     const token = req.nextauth.token
     const path = req.nextUrl.pathname
 
-    // Allow access to login page
-    if (path.startsWith('/login')) {
+    // Allow access to login and onboarding pages
+    if (path.startsWith('/login') || path === '/parent/onboarding') {
       return NextResponse.next()
     }
 
-    // Protect parent routes
+    // Protect parent routes (except onboarding)
     if (path.startsWith('/parent')) {
       if (!token) {
         return NextResponse.redirect(new URL('/login', req.url))
@@ -55,6 +55,7 @@ export default withAuth(
         if (
           path === '/' ||
           path.startsWith('/login') ||
+          path === '/parent/onboarding' ||
           path.startsWith('/styleguide') ||
           path.startsWith('/hud-demo') ||
           path.startsWith('/components-demo') ||
