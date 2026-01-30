@@ -33,7 +33,7 @@ export default withAuth(
       // because middleware runs in Edge runtime where Prisma is not available.
       //
       // Ownership verification is handled in:
-      // 1. app/(child)/[childId]/layout.tsx - Server-side RBAC check
+      // 1. app/child/[childId]/layout.tsx - Server-side RBAC check
       // 2. GET /api/auth/verify-child-access - API endpoint for client-side checks
       //
       // The layout uses verifyParentOwnsChild() from lib/rbac.ts to ensure
