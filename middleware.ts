@@ -29,21 +29,15 @@ export default withAuth(
         return NextResponse.redirect(new URL('/login', req.url))
       }
 
-      // TODO: Verify parent owns this child
-      // Extract childId from path: /child/[childId]/...
-      // const childId = path.split('/')[2]
-      // const parentId = token.sub
+      // RBAC Note: Parent-child ownership verification cannot be done here
+      // because middleware runs in Edge runtime where Prisma is not available.
       //
-      // const child = await prisma.child.findFirst({
-      //   where: {
-      //     id: childId,
-      //     parentId: parentId
-      //   }
-      // })
+      // Ownership verification is handled in:
+      // 1. app/(child)/[childId]/layout.tsx - Server-side RBAC check
+      // 2. GET /api/auth/verify-child-access - API endpoint for client-side checks
       //
-      // if (!child) {
-      //   return NextResponse.redirect(new URL('/parent/dashboard', req.url))
-      // }
+      // The layout uses verifyParentOwnsChild() from lib/rbac.ts to ensure
+      // the logged-in parent owns the child before rendering any child routes.
 
       return NextResponse.next()
     }
