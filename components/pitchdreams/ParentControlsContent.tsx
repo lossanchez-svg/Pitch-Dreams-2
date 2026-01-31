@@ -8,7 +8,7 @@ import {
   DataExportDeletePanel,
   ParentGateBanner,
 } from '@/components/pitchdreams'
-import { updateChildPermissions, exportChildData, deleteChildAccount } from '@/app/(parent)/controls/actions'
+import { updateChildPermissions, exportChildData, deleteChildAccount } from '@/app/parent/controls/actions'
 
 interface Child {
   id: string

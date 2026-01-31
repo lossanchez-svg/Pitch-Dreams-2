@@ -1,9 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import Button from '@/components/ui/Button'
-import { ChildProfileCard, ParentTrustCard } from '@/components/pitchdreams'
+import { ChildProfileCard, ParentTrustCard, ParentTrustSafetyModal } from '@/components/pitchdreams'
 
 interface Child {
   id: string
@@ -21,6 +22,7 @@ interface ParentDashboardContentProps {
 
 export function ParentDashboardContent({ children }: ParentDashboardContentProps) {
   const router = useRouter()
+  const [showTrustModal, setShowTrustModal] = useState(false)
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -35,12 +37,18 @@ export function ParentDashboardContent({ children }: ParentDashboardContentProps
       {/* Trust Card */}
       <div className="mb-8">
         <ParentTrustCard
-          onLearnMore={() => {
-            // TODO: Open ParentTrustSafetyModal
-            console.log('Open trust modal')
-          }}
+          onLearnMore={() => setShowTrustModal(true)}
         />
       </div>
+
+      {/* Trust & Safety Modal */}
+      {showTrustModal && (
+        <ParentTrustSafetyModal
+          mode="continue"
+          ctaText="Got it"
+          onComplete={() => setShowTrustModal(false)}
+        />
+      )}
 
       {/* Children Grid */}
       {children.length > 0 ? (
