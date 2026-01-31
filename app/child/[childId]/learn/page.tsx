@@ -71,7 +71,7 @@ export default async function ChildLearnPage({ params }: LearnPageProps) {
       content: lesson.content,
       readingTime: lesson.readingTime,
       difficulty: lesson.difficulty,
-      quizQuestions: lesson.quizQuestions as QuizQuestion[],
+      quizQuestions: lesson.quizQuestions as unknown as QuizQuestion[],
       completed: progress?.completed ?? false,
       quizScore: progress?.quizScore ?? null,
       quizTotal: progress?.quizTotal ?? null,
