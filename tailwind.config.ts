@@ -10,6 +10,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // shadcn/ui semantic colors (reference CSS variables)
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))',
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))',
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
+        },
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+        },
         // Base neutrals (deep, premium tech)
         gray: {
           50: '#FAFAFA',
@@ -36,7 +58,8 @@ const config: Config = {
           700: '#0E7490',
           800: '#155E75',
           900: '#164E63',
-          DEFAULT: '#06B6D4',
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
           dark: '#22D3EE',
         },
         // Accent (Tactical Lime - Energy moments)
@@ -51,7 +74,8 @@ const config: Config = {
           700: '#4D7C0F',
           800: '#3F6212',
           900: '#365314',
-          DEFAULT: '#84CC16',
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
           dark: '#A3E635',
         },
         // Secondary (Magenta - High impact)
@@ -66,7 +90,8 @@ const config: Config = {
           700: '#A21CAF',
           800: '#86198F',
           900: '#701A75',
-          DEFAULT: '#D946EF',
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))',
         },
         // Semantic colors
         success: {
