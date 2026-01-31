@@ -1,2 +1,5 @@
 export { ParentNavbar } from './ParentNavbar'
 export { ChildBottomNav } from './ChildBottomNav'
+export { Breadcrumbs } from './Breadcrumbs'
+export { ParentHeader } from './ParentHeader'
+export { ChildHeader } from './ChildHeader'

@@ -2,86 +2,142 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Base colors */
-  --foreground-rgb: 17, 24, 39;
-  --background-rgb: 255, 255, 255;
-
-  /* PitchDreams semantic tokens */
-  --pd-training-energy: 6 182 212; /* cyan-500 */
-  --pd-progress-win: 132 204 22; /* lime-500 */
-  --pd-trust-parent: 99 102 241; /* indigo-500 */
-  --pd-surface-base: 255 255 255;
-  --pd-surface-elevated: 250 250 250; /* gray-50 */
-  --pd-surface-card: 255 255 255;
-  --pd-border-subtle: 228 228 231; /* gray-200 */
-  --pd-text-primary: 24 24 27; /* gray-900 */
-  --pd-text-secondary: 82 82 91; /* gray-600 */
-  --pd-text-tertiary: 161 161 170; /* gray-400 */
-
-  /* Interaction states */
-  --pd-hover-overlay: 0 0 0 / 0.04;
-  --pd-press-overlay: 0 0 0 / 0.08;
-  --pd-focus-ring: 6 182 212; /* cyan-500 */
-
-  /* Animation durations (respects prefers-reduced-motion) */
-  --pd-duration-fast: 150ms;
-  --pd-duration-base: 200ms;
-  --pd-duration-slow: 300ms;
-  --pd-duration-delight: 800ms;
-
-  /* HUD-specific variables (Neo-Futuristic Aesthetic) */
-  --hud-cyan: 6 182 212;
-  --hud-cyan-glow: rgba(6, 182, 212, 0.4);
-  --hud-lime: 132 204 22;
-  --hud-lime-glow: rgba(132, 204 22, 0.4);
-  --hud-magenta: 217 70 239;
-  --hud-magenta-glow: rgba(217, 70, 239, 0.4);
-
-  /* HUD Geometry */
-  --hud-border: 1px;
-  --hud-corner-clip: 0.5rem;
-  --hud-grid-size: 4px;
-  --hud-scanline-speed: 4s;
-
-  /* HUD Layers */
-  --hud-backdrop: rgba(9, 9, 11, 0.95);
-  --hud-panel: rgba(24, 24, 27, 0.9);
-  --hud-overlay: rgba(6, 182, 212, 0.05);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 250, 250, 250;
-    --background-rgb: 9, 9, 11;
+    /* shadcn/ui compatible variables - Light mode */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 187 92% 43%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 187 92% 43%;
+    --radius: 0.5rem;
 
-    /* Dark mode overrides (Child HUD mode) */
-    --pd-training-energy: 34 211 238; /* cyan-400 */
-    --pd-progress-win: 163 230 53; /* lime-400 */
+    /* PitchDreams semantic tokens - Light mode */
+    --pd-training-energy: 6 182 212;
+    --pd-progress-win: 132 204 22;
+    --pd-trust-parent: 99 102 241;
+    --pd-surface-base: 255 255 255;
+    --pd-surface-elevated: 250 250 250;
+    --pd-surface-card: 255 255 255;
+    --pd-border-subtle: 228 228 231;
+    --pd-text-primary: 24 24 27;
+    --pd-text-secondary: 82 82 91;
+    --pd-text-tertiary: 161 161 170;
+
+    /* Interaction states */
+    --pd-hover-overlay: 0 0 0 / 0.04;
+    --pd-press-overlay: 0 0 0 / 0.08;
+    --pd-focus-ring: 6 182 212;
+
+    /* Animation durations */
+    --pd-duration-fast: 150ms;
+    --pd-duration-base: 200ms;
+    --pd-duration-slow: 300ms;
+    --pd-duration-delight: 800ms;
+
+    /* HUD-specific variables */
+    --hud-cyan: 6 182 212;
+    --hud-cyan-glow: rgba(6, 182, 212, 0.4);
+    --hud-lime: 132 204 22;
+    --hud-lime-glow: rgba(132, 204, 22, 0.4);
+    --hud-magenta: 217 70 239;
+    --hud-magenta-glow: rgba(217, 70, 239, 0.4);
+
+    /* HUD Geometry */
+    --hud-border: 1px;
+    --hud-corner-clip: 0.5rem;
+    --hud-grid-size: 4px;
+    --hud-scanline-speed: 4s;
+
+    /* HUD Layers - Light mode */
+    --hud-backdrop: rgba(255, 255, 255, 0.95);
+    --hud-panel: rgba(249, 250, 251, 0.9);
+    --hud-overlay: rgba(6, 182, 212, 0.05);
+    --hud-text: 24 24 27;
+    --hud-border-color: rgba(6, 182, 212, 0.3);
+  }
+
+  .dark {
+    /* shadcn/ui compatible variables - Dark mode */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 187 92% 53%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 187 92% 53%;
+
+    /* PitchDreams semantic tokens - Dark mode */
+    --pd-training-energy: 34 211 238;
+    --pd-progress-win: 163 230 53;
     --pd-trust-parent: 129 140 248;
-    --pd-surface-base: 9 9 11; /* gray-950 */
-    --pd-surface-elevated: 24 24 27; /* gray-900 */
+    --pd-surface-base: 9 9 11;
+    --pd-surface-elevated: 24 24 27;
     --pd-surface-card: 24 24 27;
-    --pd-border-subtle: 63 63 70; /* gray-700 */
-    --pd-text-primary: 250 250 250; /* gray-50 */
-    --pd-text-secondary: 212 212 216; /* gray-300 */
-    --pd-text-tertiary: 161 161 170; /* gray-400 */
+    --pd-border-subtle: 63 63 70;
+    --pd-text-primary: 250 250 250;
+    --pd-text-secondary: 212 212 216;
+    --pd-text-tertiary: 161 161 170;
     --pd-hover-overlay: 255 255 255 / 0.06;
     --pd-press-overlay: 255 255 255 / 0.12;
 
-    /* HUD Layers (darker for child mode) */
+    /* HUD Layers - Dark mode */
     --hud-backdrop: rgba(9, 9, 11, 0.98);
     --hud-panel: rgba(24, 24, 27, 0.95);
+    --hud-overlay: rgba(6, 182, 212, 0.08);
+    --hud-text: 250 250 250;
+    --hud-border-color: rgba(6, 182, 212, 0.5);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
   }
 }
 
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
-  :root {
+  :root,
+  .dark {
     --pd-duration-fast: 0ms;
     --pd-duration-base: 0ms;
     --pd-duration-slow: 0ms;
     --pd-duration-delight: 0ms;
+    --hud-scanline-speed: 0s;
   }
 
   *,
@@ -91,18 +147,6 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-rgb));
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
-@layer base {
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
   }
 }
 
@@ -127,7 +171,7 @@ body {
     );
   }
 
-  /* HUD Panel - semi-transparent dark background */
+  /* HUD Panel */
   .hud-panel {
     background: var(--hud-panel);
     backdrop-filter: blur(8px);
@@ -166,6 +210,11 @@ body {
     z-index: 10;
   }
 
+  @keyframes scan-line {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(100vh); }
+  }
+
   /* HUD Glow Effects */
   .hud-glow-cyan {
     box-shadow: 0 0 20px var(--hud-cyan-glow);
@@ -179,7 +228,7 @@ body {
     box-shadow: 0 0 20px var(--hud-magenta-glow);
   }
 
-  /* HUD Section Label - uppercase tech label */
+  /* HUD Section Label */
   .hud-label {
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.75rem;
@@ -189,14 +238,14 @@ body {
     color: rgb(var(--hud-cyan));
   }
 
-  /* HUD Data Chip - inline stat display */
+  /* HUD Data Chip */
   .hud-chip {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
     padding: 0.25rem 0.75rem;
     background: rgba(6, 182, 212, 0.1);
-    border: 1px solid rgb(var(--hud-cyan) / 0.3);
+    border: 1px solid var(--hud-border-color);
     border-radius: 0.25rem;
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.875rem;
@@ -204,7 +253,7 @@ body {
     color: rgb(var(--hud-cyan));
   }
 
-  /* Pitch Line Geometry - football field overlay */
+  /* Pitch Line Geometry */
   .pitch-lines {
     position: relative;
   }
@@ -227,7 +276,7 @@ body {
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - theme aware */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -238,17 +287,17 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: hsl(var(--muted-foreground) / 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
 /* Focus styles for accessibility */
 *:focus-visible {
-  outline: 2px solid #3B82F6;
+  outline: 2px solid hsl(var(--ring));
   outline-offset: 2px;
   border-radius: 4px;
 }
