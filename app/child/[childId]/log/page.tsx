@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { ArrowLeft, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
+import confetti from 'canvas-confetti'
 import { Card } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import { RpeSlider, MoodPicker, ChoiceChips, winPresets, focusPresets } from '@/components/pitchdreams'
+import { RpeSlider, MoodPicker, ChoiceChips, winPresets, focusPresets, CompletionToast } from '@/components/pitchdreams'
 import { saveSession } from './actions'
 
 export default function ChildLogPage() {
@@ -19,6 +20,34 @@ export default function ChildLogPage() {
   const [wins, setWins] = useState<string[]>([])
   const [focus, setFocus] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+
+  const triggerConfetti = useCallback(() => {
+    const duration = 2000
+    const end = Date.now() + duration
+
+    const frame = () => {
+      confetti({
+        particleCount: 3,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.7 },
+        colors: ['#22c55e', '#3b82f6', '#f59e0b'],
+      })
+      confetti({
+        particleCount: 3,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.7 },
+        colors: ['#22c55e', '#3b82f6', '#f59e0b'],
+      })
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame)
+      }
+    }
+    frame()
+  }, [])
 
   const handleSubmit = async () => {
     if (!mood) return
@@ -34,18 +63,22 @@ export default function ChildLogPage() {
         focus: focus.join(', '),
       })
 
-      // TODO: Show CompletionToast with confetti
-      alert('Logged. Your future self just got better.')
-
-      // Navigate back to home
-      router.push(`/child/${childId}/home`)
-      router.refresh()
+      // Show confetti and toast
+      triggerConfetti()
+      setShowToast(true)
     } catch (error) {
       console.error('Failed to save session:', error)
       alert('Failed to save session. Please try again.')
       setIsSubmitting(false)
     }
   }
+
+  const handleToastClose = useCallback(() => {
+    setShowToast(false)
+    // Navigate back to home after toast closes
+    router.push(`/child/${childId}/home`)
+    router.refresh()
+  }, [router, childId])
 
   const isComplete = rpe > 0 && mood && wins.length > 0 && focus.length > 0
 
@@ -157,6 +190,13 @@ export default function ChildLogPage() {
           "Nice work. That's one brick in your foundation."
         </p>
       </div>
+
+      {/* Completion Toast */}
+      <CompletionToast
+        show={showToast}
+        onClose={handleToastClose}
+        duration={3000}
+      />
     </div>
   )
 }
