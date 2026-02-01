@@ -101,6 +101,8 @@ model ChildProfile {
   challengeAttempts SkillChallengeAttempt[]
   lessonProgress    LessonProgress[]
   trainingPlans     TrainingPlan[]
+  activities        Activity[]
+  skillTrackLogs    SkillTrackDrillLog[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -260,4 +262,194 @@ model LessonProgress {
 
   @@unique([childId, lessonId])
   @@map("lesson_progress")
+}
+
+// ============================================
+// ACTIVITY LOGGING (Sessions, Games, Classes)
+// ============================================
+
+enum ActivityType {
+  SELF_TRAINING
+  COACH_1ON1
+  TEAM_TRAINING
+  FACILITY_CLASS
+  OFFICIAL_GAME
+  FUTSAL_GAME
+  INDOOR_LEAGUE_GAME
+}
+
+enum GameIQImpact {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Activity {
+  id              String       @id @default(cuid())
+  childId         String
+  activityType    ActivityType
+  startAt         DateTime     @default(now())
+  durationMinutes Int
+  locationName    String?
+  opponentName    String?
+  intensityRPE    Int?         // 1-10
+  gameIQImpact    GameIQImpact @default(MEDIUM)
+  notes           String?      // Parent-gated free text
+
+  facilityId String?
+  coachId    String?
+
+  child    ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  facility Facility?    @relation(fields: [facilityId], references: [id])
+  coach    Coach?       @relation(fields: [coachId], references: [id])
+
+  focusTags  ActivityFocusTag[]
+  highlights ActivityHighlightLog[]
+  nextFocus  ActivityNextFocusLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("activities")
+}
+
+model Facility {
+  id      String @id @default(cuid())
+  name    String
+  city    String
+  state   String
+  country String @default("US")
+
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("facilities")
+}
+
+model Coach {
+  id          String  @id @default(cuid())
+  displayName String
+  notes       String?
+
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("coaches")
+}
+
+// Focus tags for activities (scanning, decision_chain, etc.)
+model FocusTag {
+  id          String @id @default(cuid())
+  key         String @unique
+  label       String
+  description String?
+  category    String // "skill_track" | "general"
+
+  activityTags ActivityFocusTag[]
+
+  @@map("focus_tags")
+}
+
+model ActivityFocusTag {
+  id         String @id @default(cuid())
+  activityId String
+  focusTagId String
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  focusTag FocusTag @relation(fields: [focusTagId], references: [id])
+
+  @@unique([activityId, focusTagId])
+  @@map("activity_focus_tags")
+}
+
+// Highlight preset chips
+model HighlightChip {
+  id    String @id @default(cuid())
+  key   String @unique
+  label String
+  icon  String?
+
+  activityLogs ActivityHighlightLog[]
+
+  @@map("highlight_chips")
+}
+
+model ActivityHighlightLog {
+  id          String @id @default(cuid())
+  activityId  String
+  highlightId String
+
+  activity  Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  highlight HighlightChip @relation(fields: [highlightId], references: [id])
+
+  @@unique([activityId, highlightId])
+  @@map("activity_highlight_logs")
+}
+
+// Next focus preset chips
+model NextFocusChip {
+  id    String @id @default(cuid())
+  key   String @unique
+  label String
+  icon  String?
+
+  activityLogs ActivityNextFocusLog[]
+
+  @@map("next_focus_chips")
+}
+
+model ActivityNextFocusLog {
+  id          String @id @default(cuid())
+  activityId  String
+  nextFocusId String
+
+  activity  Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  nextFocus NextFocusChip @relation(fields: [nextFocusId], references: [id])
+
+  @@unique([activityId, nextFocusId])
+  @@map("activity_next_focus_logs")
+}
+
+// ============================================
+// SKILL TRACK DRILLS (Scanning, Decision Chain)
+// ============================================
+
+model SkillTrackDrill {
+  id                   String @id @default(cuid())
+  key                  String @unique // e.g., "scanning.3point_scan"
+  title                String
+  track                String // "scanning" | "decision_chain"
+  durationMinutes      Int
+  recommendedFrequency String // e.g., "2x/week"
+  animationKey         String
+  whyItMatters         String
+  coachTips            Json   // JSON array of strings
+  metricConfig         Json   // JSON config for tap-first metrics
+
+  logs SkillTrackDrillLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("skill_track_drills")
+}
+
+model SkillTrackDrillLog {
+  id         String @id @default(cuid())
+  childId    String
+  drillId    String
+  repsCount  Int?
+  confidence Int?   // 1-5
+  metricData Json?  // Additional metric data
+
+  child ChildProfile    @relation(fields: [childId], references: [id], onDelete: Cascade)
+  drill SkillTrackDrill @relation(fields: [drillId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("skill_track_drill_logs")
 }
