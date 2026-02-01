@@ -1,9 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
-import { Shield, ArrowRight, ArrowLeft } from 'lucide-react'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import { Shield, ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
@@ -23,9 +23,18 @@ const GOALS = [
 
 export default function ParentOnboarding() {
   const router = useRouter()
+  const { data: session, status } = useSession()
   const [step, setStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showExistingAccountWarning, setShowExistingAccountWarning] = useState(false)
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user) {
+      setShowExistingAccountWarning(true)
+    }
+  }, [status, session])
 
   // Step 1: Parent account
   const [email, setEmail] = useState('')
@@ -152,9 +161,52 @@ export default function ParentOnboarding() {
     )
   }
 
+  // Handle signing out to start fresh
+  const handleSignOutAndContinue = async () => {
+    await signOut({ redirect: false })
+    setShowExistingAccountWarning(false)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-12">
       <div className="container mx-auto px-4 max-w-2xl">
+        {/* Existing Account Warning */}
+        {showExistingAccountWarning && (
+          <Card className="mb-6 border-amber-300 dark:border-amber-600">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <AlertCircle className="w-6 h-6 text-amber-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                    You're Already Signed In
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    You're currently signed in as <span className="font-medium">{session?.user?.email}</span>.
+                    Would you like to go to your dashboard, or sign out to create a new account?
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      onClick={() => router.push('/parent/dashboard')}
+                      className="flex-1 sm:flex-none"
+                    >
+                      Go to Dashboard
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={handleSignOutAndContinue}
+                      className="flex-1 sm:flex-none"
+                    >
+                      Sign Out & Create New Account
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Progress */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">

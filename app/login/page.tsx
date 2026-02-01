@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '@/components/ui/Button'
@@ -10,11 +10,19 @@ import { Lock, Mail, Target, ArrowLeft, ArrowRight } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { status } = useSession()
   const prefersReducedMotion = useReducedMotion()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/parent/dashboard')
+    }
+  }, [status, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
