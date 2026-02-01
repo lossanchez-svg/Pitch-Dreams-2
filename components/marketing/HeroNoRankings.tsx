@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Shield, ChevronRight } from 'lucide-react'
 import Button from '@/components/ui/Button'
+import { SoccerHeroIllustration } from '@/components/illustrations'
 
 // ============================================================================
 // HELPER COMPONENTS
@@ -332,6 +333,11 @@ export default function HeroNoRankings() {
             backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
           }}
         />
+
+        {/* Anime soccer player illustration - decorative background */}
+        <div className="absolute -left-20 lg:left-auto lg:-right-32 bottom-0 w-[400px] h-[400px] lg:w-[500px] lg:h-[500px] opacity-[0.08] lg:opacity-[0.06] pointer-events-none">
+          <SoccerHeroIllustration className="w-full h-full" />
+        </div>
       </div>
 
       {/* Content container */}
