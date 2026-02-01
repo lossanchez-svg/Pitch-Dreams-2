@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowRight, Shield, Users, Target, Lock } from 'lucide-react'
 import HeroNoRankings from '@/components/marketing/HeroNoRankings'
+import TrainSkillsSection from '@/components/marketing/TrainSkillsSection'
 
 export default function HomePage() {
   return (
@@ -99,8 +100,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Train Skills Section */}
+      <TrainSkillsSection />
+
       {/* Features */}
-      <section className="relative py-20 bg-gray-950">
+      <section className="relative py-20 bg-gray-900">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-primary-400 mb-4">
