@@ -547,23 +547,18 @@ Lunging at the ball (diving in) usually means the attacker dribbles past you. Be
   console.log(`✅ Created ${challenges.length} skill challenges`)
 
   // ============================================
-  // FACILITIES (Issue #19 - Activity Logging)
+  // FACILITIES (Issue #20 - Enhanced Activity Logging)
   // ============================================
-
-  const facilities = [
-    {
-      name: 'Touch N Go',
-      city: 'Tustin',
-      state: 'CA',
-      country: 'US',
-    },
-  ]
-
-  for (const facility of facilities) {
-    await prisma.facility.create({ data: facility })
-  }
-
-  console.log(`✅ Created ${facilities.length} facilities`)
+  // Note: Facilities are now user-scoped (parentId required).
+  // Users create and save facilities through the Activity Log UI.
+  // Example facility entry (for reference):
+  // - Name: "Touch N Go"
+  // - City: "Tustin", State: "CA"
+  // - Source: MANUAL (user-entered) or GOOGLE_MAPS (place ID linked)
+  // - isVerified: true only when googlePlaceId is provided
+  //
+  // Coaches and Programs are also user-scoped and created via UI.
+  console.log(`ℹ️  Facilities/Coaches/Programs are now user-created via Activity Log`)
 
   // ============================================
   // FOCUS TAGS (Issue #19 - Activity Logging)

@@ -27,6 +27,11 @@ model ParentUser {
   accounts            Account[]
   passwordResetTokens PasswordResetToken[]
 
+  // Saved items for activity logging
+  facilities Facility[]
+  coaches    Coach[]
+  programs   Program[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -284,6 +289,19 @@ enum GameIQImpact {
   HIGH
 }
 
+enum FacilitySource {
+  GOOGLE_MAPS
+  MANUAL
+}
+
+enum ProgramType {
+  TEAM
+  FUTSAL
+  INDOOR
+  CLASS
+  OTHER
+}
+
 model Activity {
   id              String       @id @default(cuid())
   childId         String
@@ -296,12 +314,20 @@ model Activity {
   gameIQImpact    GameIQImpact @default(MEDIUM)
   notes           String?      // Parent-gated free text
 
+  // Stable references (when using saved items)
   facilityId String?
   coachId    String?
+  programId  String?
+
+  // Freeform fallbacks (when typing manually without saving)
+  facilityNameFreeform String?
+  coachNameFreeform    String?
+  programNameFreeform  String?
 
   child    ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
   facility Facility?    @relation(fields: [facilityId], references: [id])
   coach    Coach?       @relation(fields: [coachId], references: [id])
+  program  Program?     @relation(fields: [programId], references: [id])
 
   focusTags  ActivityFocusTag[]
   highlights ActivityHighlightLog[]
@@ -314,12 +340,24 @@ model Activity {
 }
 
 model Facility {
-  id      String @id @default(cuid())
-  name    String
-  city    String
-  state   String
-  country String @default("US")
+  id       String         @id @default(cuid())
+  parentId String         // Owner scope (parent user)
+  name     String
+  city     String?
+  state    String?
+  country  String?        @default("US")
+  source   FacilitySource @default(MANUAL)
 
+  // Google Maps integration
+  googlePlaceId String?   // Google Place ID for verified locations
+  mapsUrl       String?   // Direct maps URL for manual entries
+  isVerified    Boolean   @default(false)
+
+  // Reuse tracking
+  isSaved  Boolean @default(false)
+  lastUsed DateTime?
+
+  parent     ParentUser @relation(fields: [parentId], references: [id], onDelete: Cascade)
   activities Activity[]
 
   createdAt DateTime @default(now())
@@ -330,15 +368,40 @@ model Facility {
 
 model Coach {
   id          String  @id @default(cuid())
+  parentId    String  // Owner scope (parent user)
   displayName String
   notes       String?
 
+  // Reuse tracking
+  isSaved  Boolean @default(false)
+  lastUsed DateTime?
+
+  parent     ParentUser @relation(fields: [parentId], references: [id], onDelete: Cascade)
   activities Activity[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("coaches")
+}
+
+model Program {
+  id       String      @id @default(cuid())
+  parentId String      // Owner scope (parent user)
+  name     String
+  type     ProgramType @default(OTHER)
+
+  // Reuse tracking
+  isSaved  Boolean @default(false)
+  lastUsed DateTime?
+
+  parent     ParentUser @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("programs")
 }
 
 // Focus tags for activities (scanning, decision_chain, etc.)
