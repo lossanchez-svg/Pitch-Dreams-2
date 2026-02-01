@@ -51,5 +51,9 @@ export type { FocusTag } from './FocusTagPicker'
 export { HighlightChipPicker } from './HighlightChipPicker'
 export type { ChipOption } from './HighlightChipPicker'
 
+// Dashboard Components
+export { ActivitySummaryCard } from './ActivitySummaryCard'
+export type { ActivitySummary } from './ActivitySummaryCard'
+
 // Locked States
 export { LockedState, PermissionLockedState, AgeGatedState } from './LockedState'
