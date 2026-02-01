@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Flame, Trophy, Target, Eye, Brain } from 'lucide-react'
+import { Flame, Trophy, Target, Eye, Brain, ClipboardList } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import { ConsistencyRingCard, DrillCard } from '@/components/pitchdreams'
@@ -81,6 +81,43 @@ export function ChildHomeContent({
             Lock it in
           </Button>
         </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        {/* Log Activity */}
+        <Card
+          variant="hud-panel"
+          className="p-5 cursor-pointer hover:border-accent-500/50 transition-colors group"
+          onClick={() => router.push(`/child/${childId}/activity/new`)}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-accent-500/20 border border-accent-500/40 flex items-center justify-center group-hover:bg-accent-500/30 transition-colors">
+              <ClipboardList className="w-6 h-6 text-accent-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display text-xl text-accent-400">Log Activity</h3>
+              <p className="text-sm text-gray-400">Track games, training & classes</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* View Progress */}
+        <Card
+          variant="hud-panel"
+          className="p-5 cursor-pointer hover:border-primary-500/50 transition-colors group"
+          onClick={() => router.push(`/child/${childId}/progress`)}
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-primary-500/20 border border-primary-500/40 flex items-center justify-center group-hover:bg-primary-500/30 transition-colors">
+              <Trophy className="w-6 h-6 text-primary-400" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display text-xl text-primary-400">View Progress</h3>
+              <p className="text-sm text-gray-400">See your training journey</p>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Skill Tracks Section */}

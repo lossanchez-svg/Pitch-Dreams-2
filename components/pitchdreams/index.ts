@@ -41,5 +41,15 @@ export { QuizCard } from './QuizCard'
 export { SkillAvatarAnimation } from './SkillAvatarAnimation'
 export { SkillTrackDrillCard } from './SkillTrackDrillCard'
 
+// Activity Logging Components
+export { ActivityTypePicker } from './ActivityTypePicker'
+export type { ActivityType } from './ActivityTypePicker'
+export { GameIQImpactPicker } from './GameIQImpactPicker'
+export type { GameIQImpact } from './GameIQImpactPicker'
+export { FocusTagPicker } from './FocusTagPicker'
+export type { FocusTag } from './FocusTagPicker'
+export { HighlightChipPicker } from './HighlightChipPicker'
+export type { ChipOption } from './HighlightChipPicker'
+
 // Locked States
 export { LockedState, PermissionLockedState, AgeGatedState } from './LockedState'
