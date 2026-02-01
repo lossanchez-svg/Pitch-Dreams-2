@@ -23,7 +23,9 @@ const GOALS = [
 
 export default function ParentOnboarding() {
   const router = useRouter()
-  const { data: session, status } = useSession()
+  const sessionData = useSession()
+  const session = sessionData?.data
+  const status = sessionData?.status
   const [step, setStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')

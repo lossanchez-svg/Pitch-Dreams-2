@@ -10,7 +10,8 @@ import { Lock, Mail, Target, ArrowLeft, ArrowRight } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { status } = useSession()
+  const session = useSession()
+  const status = session?.status
   const prefersReducedMotion = useReducedMotion()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

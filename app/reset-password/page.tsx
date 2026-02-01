@@ -1,13 +1,26 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion, useReducedMotion } from 'framer-motion'
 import Button from '@/components/ui/Button'
 import { Lock, Target, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react'
 
-export default function ResetPasswordPage() {
+// Loading fallback for Suspense
+function LoadingState() {
+  return (
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4 py-12">
+      <div className="text-center">
+        <div className="w-12 h-12 border-2 border-primary-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    </div>
+  )
+}
+
+// Main content component that uses useSearchParams
+function ResetPasswordContent() {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const prefersReducedMotion = useReducedMotion()
@@ -332,5 +345,14 @@ export default function ResetPasswordPage() {
         </motion.div>
       </motion.div>
     </div>
+  )
+}
+
+// Page component with Suspense wrapper
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <ResetPasswordContent />
+    </Suspense>
   )
 }
