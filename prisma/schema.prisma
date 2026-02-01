@@ -22,9 +22,10 @@ model ParentUser {
 
   weeklyEmailEnabled Boolean @default(true)
 
-  childProfiles ChildProfile[]
-  sessions      Session[]
-  accounts      Account[]
+  childProfiles       ChildProfile[]
+  sessions            Session[]
+  accounts            Account[]
+  passwordResetTokens PasswordResetToken[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -61,6 +62,20 @@ model Session {
   user ParentUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expires   DateTime
+  used      Boolean  @default(false)
+
+  user ParentUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@map("password_reset_tokens")
 }
 
 // ============================================

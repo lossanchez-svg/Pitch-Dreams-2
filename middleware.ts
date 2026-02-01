@@ -54,6 +54,8 @@ export default withAuth(
           path === '/' ||
           path.startsWith('/login') ||
           path === '/parent/onboarding' ||
+          path.startsWith('/forgot-password') ||
+          path.startsWith('/reset-password') ||
           path.startsWith('/styleguide') ||
           path.startsWith('/hud-demo') ||
           path.startsWith('/components-demo') ||
