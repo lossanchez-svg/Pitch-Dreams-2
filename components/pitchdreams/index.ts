@@ -37,5 +37,9 @@ export { DrillStepList } from './DrillStepList'
 export { LessonCard } from './LessonCard'
 export { QuizCard } from './QuizCard'
 
+// Skill Track Components
+export { SkillAvatarAnimation } from './SkillAvatarAnimation'
+export { SkillTrackDrillCard } from './SkillTrackDrillCard'
+
 // Locked States
 export { LockedState, PermissionLockedState, AgeGatedState } from './LockedState'
