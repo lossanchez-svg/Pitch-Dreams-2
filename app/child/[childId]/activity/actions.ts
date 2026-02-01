@@ -2,6 +2,8 @@
 
 import { prisma } from '@/lib/db'
 import { verifyChildOwnership } from '@/lib/child-helpers'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 
 export type ActivityType =
@@ -14,6 +16,8 @@ export type ActivityType =
   | 'INDOOR_LEAGUE_GAME'
 
 export type GameIQImpact = 'LOW' | 'MEDIUM' | 'HIGH'
+export type ProgramType = 'TEAM' | 'FUTSAL' | 'INDOOR' | 'CLASS' | 'OTHER'
+export type FacilitySource = 'GOOGLE_MAPS' | 'MANUAL'
 
 interface CreateActivityInput {
   activityType: ActivityType
@@ -23,8 +27,15 @@ interface CreateActivityInput {
   intensityRPE?: number
   gameIQImpact: GameIQImpact
   notes?: string
+  // Stable references (when using saved items)
   facilityId?: string
   coachId?: string
+  programId?: string
+  // Freeform fallbacks (when typing manually without saving)
+  facilityNameFreeform?: string
+  coachNameFreeform?: string
+  programNameFreeform?: string
+  // Tags
   focusTagIds: string[]
   highlightIds: string[]
   nextFocusIds: string[]
@@ -46,8 +57,14 @@ export async function createActivity(childId: string, input: CreateActivityInput
         intensityRPE: input.intensityRPE,
         gameIQImpact: input.gameIQImpact,
         notes: input.notes,
+        // Stable references
         facilityId: input.facilityId,
         coachId: input.coachId,
+        programId: input.programId,
+        // Freeform fallbacks
+        facilityNameFreeform: input.facilityNameFreeform,
+        coachNameFreeform: input.coachNameFreeform,
+        programNameFreeform: input.programNameFreeform,
         // Create focus tag relations
         focusTags: {
           create: input.focusTagIds.map(focusTagId => ({
@@ -69,6 +86,26 @@ export async function createActivity(childId: string, input: CreateActivityInput
       },
     })
 
+    // Update lastUsed timestamps for selected items
+    if (input.facilityId) {
+      await prisma.facility.update({
+        where: { id: input.facilityId },
+        data: { lastUsed: new Date() },
+      })
+    }
+    if (input.coachId) {
+      await prisma.coach.update({
+        where: { id: input.coachId },
+        data: { lastUsed: new Date() },
+      })
+    }
+    if (input.programId) {
+      await prisma.program.update({
+        where: { id: input.programId },
+        data: { lastUsed: new Date() },
+      })
+    }
+
     // Revalidate relevant paths
     revalidatePath(`/child/${childId}/home`)
     revalidatePath(`/child/${childId}/progress`)
@@ -81,17 +118,244 @@ export async function createActivity(childId: string, input: CreateActivityInput
   }
 }
 
-export async function getFacilities() {
+// ============================================
+// FACILITY ACTIONS
+// ============================================
+
+interface CreateFacilityInput {
+  name: string
+  city?: string | null
+  state?: string | null
+  country?: string | null
+  source?: FacilitySource
+  googlePlaceId?: string | null
+  mapsUrl?: string | null
+  isVerified?: boolean
+  isSaved?: boolean
+}
+
+export async function createFacility(input: CreateFacilityInput) {
   try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    const facility = await prisma.facility.create({
+      data: {
+        parentId: session.user.id,
+        name: input.name,
+        city: input.city,
+        state: input.state,
+        country: input.country || 'US',
+        source: input.source || 'MANUAL',
+        googlePlaceId: input.googlePlaceId,
+        mapsUrl: input.mapsUrl,
+        isVerified: input.isVerified || false,
+        isSaved: input.isSaved || false,
+        lastUsed: new Date(),
+      },
+    })
+
+    return { success: true, facility }
+  } catch (error) {
+    console.error('Failed to create facility:', error)
+    return { success: false, error: 'Failed to create facility' }
+  }
+}
+
+export async function getSavedFacilities() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return []
+
     const facilities = await prisma.facility.findMany({
+      where: {
+        parentId: session.user.id,
+        isSaved: true,
+      },
       orderBy: { name: 'asc' },
     })
+
     return facilities
   } catch (error) {
-    console.error('Failed to fetch facilities:', error)
+    console.error('Failed to fetch saved facilities:', error)
     return []
   }
 }
+
+export async function getRecentFacilities(limit = 5) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return []
+
+    const facilities = await prisma.facility.findMany({
+      where: {
+        parentId: session.user.id,
+        lastUsed: { not: null },
+      },
+      orderBy: { lastUsed: 'desc' },
+      take: limit,
+    })
+
+    return facilities
+  } catch (error) {
+    console.error('Failed to fetch recent facilities:', error)
+    return []
+  }
+}
+
+// ============================================
+// COACH ACTIONS
+// ============================================
+
+interface CreateCoachInput {
+  displayName: string
+  isSaved?: boolean
+}
+
+export async function createCoach(input: CreateCoachInput) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    const coach = await prisma.coach.create({
+      data: {
+        parentId: session.user.id,
+        displayName: input.displayName,
+        isSaved: input.isSaved || false,
+        lastUsed: new Date(),
+      },
+    })
+
+    return { success: true, coach }
+  } catch (error) {
+    console.error('Failed to create coach:', error)
+    return { success: false, error: 'Failed to create coach' }
+  }
+}
+
+export async function getSavedCoaches() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return []
+
+    const coaches = await prisma.coach.findMany({
+      where: {
+        parentId: session.user.id,
+        isSaved: true,
+      },
+      orderBy: { displayName: 'asc' },
+    })
+
+    return coaches
+  } catch (error) {
+    console.error('Failed to fetch saved coaches:', error)
+    return []
+  }
+}
+
+export async function getRecentCoaches(limit = 5) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return []
+
+    const coaches = await prisma.coach.findMany({
+      where: {
+        parentId: session.user.id,
+        lastUsed: { not: null },
+      },
+      orderBy: { lastUsed: 'desc' },
+      take: limit,
+    })
+
+    return coaches
+  } catch (error) {
+    console.error('Failed to fetch recent coaches:', error)
+    return []
+  }
+}
+
+// ============================================
+// PROGRAM ACTIONS
+// ============================================
+
+interface CreateProgramInput {
+  name: string
+  type: ProgramType
+  isSaved?: boolean
+}
+
+export async function createProgram(input: CreateProgramInput) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return { success: false, error: 'Not authenticated' }
+    }
+
+    const program = await prisma.program.create({
+      data: {
+        parentId: session.user.id,
+        name: input.name,
+        type: input.type,
+        isSaved: input.isSaved || false,
+        lastUsed: new Date(),
+      },
+    })
+
+    return { success: true, program }
+  } catch (error) {
+    console.error('Failed to create program:', error)
+    return { success: false, error: 'Failed to create program' }
+  }
+}
+
+export async function getSavedPrograms() {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return []
+
+    const programs = await prisma.program.findMany({
+      where: {
+        parentId: session.user.id,
+        isSaved: true,
+      },
+      orderBy: { name: 'asc' },
+    })
+
+    return programs
+  } catch (error) {
+    console.error('Failed to fetch saved programs:', error)
+    return []
+  }
+}
+
+export async function getRecentPrograms(limit = 5) {
+  try {
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) return []
+
+    const programs = await prisma.program.findMany({
+      where: {
+        parentId: session.user.id,
+        lastUsed: { not: null },
+      },
+      orderBy: { lastUsed: 'desc' },
+      take: limit,
+    })
+
+    return programs
+  } catch (error) {
+    console.error('Failed to fetch recent programs:', error)
+    return []
+  }
+}
+
+// ============================================
+// EXISTING ACTIONS (unchanged)
+// ============================================
 
 export async function getFocusTags() {
   try {
@@ -140,6 +404,7 @@ export async function getRecentActivities(childId: string, limit = 10) {
       include: {
         facility: true,
         coach: true,
+        program: true,
         focusTags: {
           include: { focusTag: true },
         },

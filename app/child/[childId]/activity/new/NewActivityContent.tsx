@@ -10,7 +10,16 @@ import { ActivityTypePicker, type ActivityType } from '@/components/pitchdreams/
 import { GameIQImpactPicker, type GameIQImpact } from '@/components/pitchdreams/GameIQImpactPicker'
 import { FocusTagPicker, type FocusTag } from '@/components/pitchdreams/FocusTagPicker'
 import { HighlightChipPicker, type ChipOption } from '@/components/pitchdreams/HighlightChipPicker'
-import { createActivity } from '../actions'
+import { FacilityPicker, type FacilityData } from '@/components/pitchdreams/FacilityPicker'
+import { CoachPicker, type CoachData } from '@/components/pitchdreams/CoachPicker'
+import { ProgramPicker, type ProgramData } from '@/components/pitchdreams/ProgramPicker'
+import {
+  createActivity,
+  createFacility,
+  createCoach,
+  createProgram,
+} from '../actions'
+import { getFacilityMapsUrl } from '@/lib/maps'
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,20 +27,18 @@ import {
   MapPin,
   Users,
   CheckCircle,
-  Building2,
+  ExternalLink,
 } from 'lucide-react'
-
-interface Facility {
-  id: string
-  name: string
-  city: string
-  state: string
-}
 
 interface NewActivityContentProps {
   childId: string
   childName: string
-  facilities: Facility[]
+  savedFacilities: FacilityData[]
+  recentFacilities: FacilityData[]
+  savedCoaches: CoachData[]
+  recentCoaches: CoachData[]
+  savedPrograms: ProgramData[]
+  recentPrograms: ProgramData[]
   focusTags: FocusTag[]
   highlightChips: ChipOption[]
   nextFocusChips: ChipOption[]
@@ -41,8 +48,12 @@ type Step = 'type' | 'details' | 'reflection' | 'confirm'
 
 export function NewActivityContent({
   childId,
-  childName,
-  facilities,
+  savedFacilities: initialSavedFacilities,
+  recentFacilities: initialRecentFacilities,
+  savedCoaches: initialSavedCoaches,
+  recentCoaches: initialRecentCoaches,
+  savedPrograms: initialSavedPrograms,
+  recentPrograms: initialRecentPrograms,
   focusTags,
   highlightChips,
   nextFocusChips,
@@ -50,6 +61,14 @@ export function NewActivityContent({
   const router = useRouter()
   const [step, setStep] = useState<Step>('type')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Local state for saved/recent items (to update after creating new ones)
+  const [savedFacilities, setSavedFacilities] = useState(initialSavedFacilities)
+  const [recentFacilities, setRecentFacilities] = useState(initialRecentFacilities)
+  const [savedCoaches, setSavedCoaches] = useState(initialSavedCoaches)
+  const [recentCoaches, setRecentCoaches] = useState(initialRecentCoaches)
+  const [savedPrograms, setSavedPrograms] = useState(initialSavedPrograms)
+  const [recentPrograms, setRecentPrograms] = useState(initialRecentPrograms)
 
   // Form state
   const [activityType, setActivityType] = useState<ActivityType | null>(null)
@@ -59,16 +78,23 @@ export function NewActivityContent({
   const [intensityRPE, setIntensityRPE] = useState(5)
   const [gameIQImpact, setGameIQImpact] = useState<GameIQImpact>('MEDIUM')
   const [notes, setNotes] = useState('')
-  const [selectedFacilityId, setSelectedFacilityId] = useState<string>('')
+
+  // Facility, Coach, Program selections
+  const [selectedFacility, setSelectedFacility] = useState<FacilityData | null>(null)
+  const [selectedCoach, setSelectedCoach] = useState<CoachData | null>(null)
+  const [selectedProgram, setSelectedProgram] = useState<ProgramData | null>(null)
+
   const [selectedFocusTags, setSelectedFocusTags] = useState<string[]>([])
   const [selectedHighlights, setSelectedHighlights] = useState<string[]>([])
   const [selectedNextFocus, setSelectedNextFocus] = useState<string[]>([])
 
   const isGameType = activityType?.includes('GAME') || false
   const needsFacility = activityType === 'FACILITY_CLASS'
+  const needsCoach = activityType === 'COACH_1ON1'
+  const needsProgram = activityType === 'TEAM_TRAINING' || isGameType
 
   const canProceedFromType = activityType !== null
-  const canProceedFromDetails = durationMinutes > 0 && (!needsFacility || selectedFacilityId)
+  const canProceedFromDetails = durationMinutes > 0
   const canSubmit = canProceedFromType && canProceedFromDetails
 
   const handleNext = () => {
@@ -81,6 +107,63 @@ export function NewActivityContent({
     if (step === 'details') setStep('type')
     else if (step === 'reflection') setStep('details')
     else if (step === 'confirm') setStep('reflection')
+  }
+
+  // Handlers for creating new items
+  const handleSaveNewFacility = async (facility: Omit<FacilityData, 'id'>) => {
+    const result = await createFacility({
+      name: facility.name,
+      city: facility.city,
+      state: facility.state,
+      country: facility.country,
+      source: facility.source,
+      googlePlaceId: facility.googlePlaceId,
+      mapsUrl: facility.mapsUrl,
+      isVerified: facility.isVerified,
+      isSaved: facility.isSaved,
+    })
+
+    if (result.success && result.facility) {
+      const newFacility = result.facility as FacilityData
+      if (newFacility.isSaved) {
+        setSavedFacilities(prev => [...prev, newFacility])
+      }
+      setRecentFacilities(prev => [newFacility, ...prev.slice(0, 4)])
+      setSelectedFacility(newFacility)
+    }
+  }
+
+  const handleSaveNewCoach = async (coach: Omit<CoachData, 'id'>) => {
+    const result = await createCoach({
+      displayName: coach.displayName,
+      isSaved: coach.isSaved,
+    })
+
+    if (result.success && result.coach) {
+      const newCoach = result.coach as CoachData
+      if (newCoach.isSaved) {
+        setSavedCoaches(prev => [...prev, newCoach])
+      }
+      setRecentCoaches(prev => [newCoach, ...prev.slice(0, 4)])
+      setSelectedCoach(newCoach)
+    }
+  }
+
+  const handleSaveNewProgram = async (program: Omit<ProgramData, 'id'>) => {
+    const result = await createProgram({
+      name: program.name,
+      type: program.type,
+      isSaved: program.isSaved,
+    })
+
+    if (result.success && result.program) {
+      const newProgram = result.program as ProgramData
+      if (newProgram.isSaved) {
+        setSavedPrograms(prev => [...prev, newProgram])
+      }
+      setRecentPrograms(prev => [newProgram, ...prev.slice(0, 4)])
+      setSelectedProgram(newProgram)
+    }
   }
 
   const handleSubmit = async () => {
@@ -97,7 +180,14 @@ export function NewActivityContent({
         intensityRPE,
         gameIQImpact,
         notes: notes || undefined,
-        facilityId: needsFacility ? selectedFacilityId || undefined : undefined,
+        // Stable references (when using saved items)
+        facilityId: selectedFacility?.id,
+        coachId: selectedCoach?.id,
+        programId: selectedProgram?.id,
+        // Freeform fallbacks (when typed without saving)
+        facilityNameFreeform: !selectedFacility?.id ? selectedFacility?.name : undefined,
+        coachNameFreeform: !selectedCoach?.id ? selectedCoach?.displayName : undefined,
+        programNameFreeform: !selectedProgram?.id ? selectedProgram?.name : undefined,
         focusTagIds: selectedFocusTags,
         highlightIds: selectedHighlights,
         nextFocusIds: selectedNextFocus,
@@ -227,6 +317,39 @@ export function NewActivityContent({
               </div>
             </div>
 
+            {/* Facility Picker (for Facility Class) */}
+            {needsFacility && (
+              <FacilityPicker
+                savedFacilities={savedFacilities}
+                recentFacilities={recentFacilities}
+                selectedFacility={selectedFacility}
+                onSelect={setSelectedFacility}
+                onSaveNew={handleSaveNewFacility}
+              />
+            )}
+
+            {/* Coach Picker (for 1:1 Coaching) */}
+            {needsCoach && (
+              <CoachPicker
+                savedCoaches={savedCoaches}
+                recentCoaches={recentCoaches}
+                selectedCoach={selectedCoach}
+                onSelect={setSelectedCoach}
+                onSaveNew={handleSaveNewCoach}
+              />
+            )}
+
+            {/* Program Picker (for Team Training and Games) */}
+            {needsProgram && (
+              <ProgramPicker
+                savedPrograms={savedPrograms}
+                recentPrograms={recentPrograms}
+                selectedProgram={selectedProgram}
+                onSelect={setSelectedProgram}
+                onSaveNew={handleSaveNewProgram}
+              />
+            )}
+
             {/* Location */}
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-gray-400 mb-2">
@@ -243,30 +366,6 @@ export function NewActivityContent({
                 />
               </div>
             </div>
-
-            {/* Facility Selection (for Facility Class) */}
-            {needsFacility && (
-              <div>
-                <label className="block text-xs font-mono uppercase tracking-wider text-gray-400 mb-2">
-                  Facility *
-                </label>
-                <div className="flex items-center gap-4">
-                  <Building2 className="w-5 h-5 text-gray-500" />
-                  <select
-                    value={selectedFacilityId}
-                    onChange={(e) => setSelectedFacilityId(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  >
-                    <option value="">Select a facility...</option>
-                    {facilities.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.name} - {f.city}, {f.state}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
 
             {/* Opponent (for Games) */}
             {isGameType && (
@@ -369,6 +468,39 @@ export function NewActivityContent({
                 <span className="text-gray-400">Duration</span>
                 <span className="text-gray-200">{durationMinutes} minutes</span>
               </div>
+              {selectedFacility && (
+                <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                  <span className="text-gray-400">Facility</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-200">{selectedFacility.name}</span>
+                    {selectedFacility.isVerified && (
+                      <span className="text-xs px-1.5 py-0.5 rounded bg-accent-500/20 text-accent-400">
+                        Verified
+                      </span>
+                    )}
+                    <a
+                      href={getFacilityMapsUrl(selectedFacility).url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-400 hover:text-primary-300"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+              )}
+              {selectedCoach && (
+                <div className="flex justify-between py-2 border-b border-gray-800">
+                  <span className="text-gray-400">Coach</span>
+                  <span className="text-gray-200">{selectedCoach.displayName}</span>
+                </div>
+              )}
+              {selectedProgram && (
+                <div className="flex justify-between py-2 border-b border-gray-800">
+                  <span className="text-gray-400">Program</span>
+                  <span className="text-gray-200">{selectedProgram.name}</span>
+                </div>
+              )}
               {locationName && (
                 <div className="flex justify-between py-2 border-b border-gray-800">
                   <span className="text-gray-400">Location</span>

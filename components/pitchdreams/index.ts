@@ -50,6 +50,12 @@ export { FocusTagPicker } from './FocusTagPicker'
 export type { FocusTag } from './FocusTagPicker'
 export { HighlightChipPicker } from './HighlightChipPicker'
 export type { ChipOption } from './HighlightChipPicker'
+export { FacilityPicker } from './FacilityPicker'
+export type { FacilityData } from './FacilityPicker'
+export { CoachPicker } from './CoachPicker'
+export type { CoachData } from './CoachPicker'
+export { ProgramPicker } from './ProgramPicker'
+export type { ProgramData, ProgramType } from './ProgramPicker'
 
 // Dashboard Components
 export { ActivitySummaryCard } from './ActivitySummaryCard'
