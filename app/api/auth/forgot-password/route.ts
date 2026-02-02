@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { randomBytes } from 'crypto'
+import { sendPasswordResetEmail } from '@/lib/email'
 
 // Helper to check if error is a Prisma table-not-found error
 function isTableNotFoundError(error: unknown): boolean {
@@ -75,23 +76,19 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
     const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`
 
-    // Log the reset URL for development (in production, this would send an email)
-    console.log('='.repeat(60))
-    console.log('PASSWORD RESET REQUESTED')
-    console.log(`Email: ${email}`)
-    console.log(`Reset URL: ${resetUrl}`)
-    console.log(`Expires: ${expires.toISOString()}`)
-    console.log('='.repeat(60))
+    // Send the password reset email
+    const emailResult = await sendPasswordResetEmail(email, resetUrl)
 
-    // TODO: In production, send email using a service like SendGrid, Resend, etc.
-    // Example:
-    // await sendPasswordResetEmail(email, resetUrl)
+    if (!emailResult.success) {
+      console.error('Failed to send password reset email:', emailResult.error)
+      // Still return success to user for security (don't reveal email sending issues)
+    }
 
     return NextResponse.json({
       success: true,
       message: 'If an account exists with this email, a reset link will be sent.',
       // Only include debug info in development
-      ...(process.env.NODE_ENV === 'development' && {
+      ...(process.env.NODE_ENV === 'development' && !process.env.RESEND_API_KEY && {
         debug: { resetUrl, expires: expires.toISOString() }
       }),
     })
