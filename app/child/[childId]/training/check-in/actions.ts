@@ -13,6 +13,25 @@ import {
 
 export type { SessionMode, Soreness, MoodEmoji }
 
+// Local type for CheckIn records from DB queries
+interface CheckInRecord {
+  id: string
+  childId: string
+  energy: number
+  soreness: string
+  focus: number
+  mood: string
+  timeAvail: number
+  painFlag: boolean
+  mode: string
+  modeExplanation: string | null
+  qualityRating: number | null
+  completed: boolean
+  activityId: string | null
+  createdAt: Date
+  updatedAt: Date
+}
+
 interface CreateCheckInInput {
   energy: number
   soreness: Soreness
@@ -187,11 +206,10 @@ export async function getWeeklyTrends(childId: string, weeksBack = 4): Promise<W
         },
       })
 
-      const completedCheckIns = checkIns.filter(c => c.completed)
-      const ratingsSum = completedCheckIns
-        .filter(c => c.qualityRating !== null)
-        .reduce((sum, c) => sum + (c.qualityRating || 0), 0)
-      const ratingsCount = completedCheckIns.filter(c => c.qualityRating !== null).length
+      const completedCheckIns = checkIns.filter((c: CheckInRecord) => c.completed)
+      const withRatings = completedCheckIns.filter((c: CheckInRecord) => c.qualityRating !== null)
+      const ratingsSum = withRatings.reduce((sum: number, c: CheckInRecord) => sum + (c.qualityRating || 0), 0)
+      const ratingsCount = withRatings.length
 
       // Check for PB movement (skill challenge attempts)
       const pbAttempts = await prisma.skillChallengeAttempt.findMany({
