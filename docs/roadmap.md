@@ -1,40 +1,38 @@
-# Pitch Dreams Roadmap
+# PitchDreams Build Roadmap
 
-## Vision
-A youth soccer training app that helps kids (8-14) develop their skills through guided drills, game IQ training, and activity logging—all with a dark HUD aesthetic inspired by sports tech.
+## Principles
+- Web-first MVP
+- No video in MVP
+- No social, chat, public profiles
+- Tap-first logging (minors)
+- "Delight without addiction"
+- Original anime/HUD vibe without copyrighted assets
+- Parent trust and control
 
-## Current Status: MVP Phase
+## Now (MVP Milestones)
 
-### Completed Features
+| # | Feature | Issue | Status |
+|---|---------|-------|--------|
+| 1 | Theme consistency + Breadcrumbs | #7-#10 | Done |
+| 2 | Landing page: anime soccer clarity | #11-#14 | Done |
+| 3 | Drill avatar animation system (Scanning, Decision Chain) | #15-#19 | Done |
+| 4 | Unified Activity Log (1:1, team, facility, games, futsal, indoor) | #19-#20 | Done |
+| 5 | Facilities/Coaches/Programs saved selections + Maps linking | #20-#21 | Done |
 
-| Feature | Issue | Status |
-|---------|-------|--------|
-| Dark HUD Theme + Breadcrumbs | #7-#10 | Done |
-| Landing Page Anime Visuals | #11-#14 | Done |
-| Drill Animations (Scanning, Decision Chain) | #15-#19 | Done |
-| Activity Log (Sessions & Matches) | #19-#20 | Done |
-| Facilities/Coaches/Programs (Saved + Maps) | #20-#21 | Done |
+## Next (Phase 2: Enhanced Training)
 
-### MVP Constraints
-- No social features, no tracking
-- Minors safety: no collecting coach contact info
-- No paid APIs (Google Places deferred)
-- Web-first, mobile-first, accessible
-
-## Future Phases
-
-### Phase 2: Enhanced Training
 - [ ] Readiness Check (Recover/Build/Push adaptive training)
 - [ ] Drill library expansion
-- [ ] Video tutorials integration
 - [ ] Skill progression tracking
 - [ ] Parent dashboard improvements
 
-### Phase 3: Advanced Features
-- [ ] Google Places API integration (verified facilities)
+## Later (Post-MVP)
+
+- [ ] Google Places Autocomplete (paid API) to verify facilities
+- [ ] Short skill animations as Lottie/WebM library expansion
+- [ ] Coach views (read-only) and optional exports
 - [ ] Training plan recommendations
 - [ ] Performance analytics
-- [ ] Team/club features (with proper consent flows)
 
 ## Technical Stack
 - Next.js 14 (App Router)
@@ -48,3 +46,9 @@ A youth soccer training app that helps kids (8-14) develop their skills through 
 2. **Child-Safe** - No social features, parent-gated controls
 3. **Mobile-First** - Touch-friendly, responsive
 4. **Accessible** - WCAG guidelines, clear contrast
+
+## MVP Constraints
+- No social features, no tracking
+- Minors safety: no collecting coach contact info
+- No paid APIs (Google Places deferred)
+- Web-first, mobile-first, accessible
