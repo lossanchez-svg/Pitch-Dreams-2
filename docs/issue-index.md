@@ -1,39 +1,22 @@
-# GitHub Issue Index
+# Issue Index
 
-Quick reference for all GitHub issues in the Pitch Dreams project.
+Each GitHub Issue links to its matching feature doc.
 
-## Issues by Feature
+| Issue Area | GitHub Issues | Feature Doc |
+|------------|---------------|-------------|
+| UI Consistency, Breadcrumbs, Navigation | #7-#10 | [001-theme-and-breadcrumbs.md](features/001-theme-and-breadcrumbs.md) |
+| Landing Page Anime Soccer Visuals | #11-#14 | [002-landing-anime-visuals.md](features/002-landing-anime-visuals.md) |
+| Drill Avatar Animations + Scanning/Decision Chain | #15-#19 | [003-drill-avatar-animations-scanning-decision-chain.md](features/003-drill-avatar-animations-scanning-decision-chain.md) |
+| Activity Log (Sessions + Matches) | #19-#20 | [004-activity-log-sessions-and-matches.md](features/004-activity-log-sessions-and-matches.md) |
+| Saved Facilities/Coaches/Programs + Maps Links | #20-#21 | [005-facilities-coaches-programs-saved-and-maps-links.md](features/005-facilities-coaches-programs-saved-and-maps-links.md) |
+| Readiness Check + Adaptive Training | (Planned) | [006-readiness-check-adaptive-training.md](features/006-readiness-check-adaptive-training.md) |
 
-### Theme & UI Foundation
-| Issue | Title | Status |
-|-------|-------|--------|
-| #7 | Dark HUD Theme System | Closed |
-| #8 | Breadcrumb Navigation | Closed |
-| #9 | Route Guards & RBAC | Closed |
-| #10 | Training/Learn Page Layouts | Closed |
+## Decision Records
 
-### Landing Page
-| Issue | Title | Status |
-|-------|-------|--------|
-| #11 | Landing Page Hero Section | Closed |
-| #12 | Anime-Style Player Visuals | Closed |
-| #13 | Feature Cards & CTAs | Closed |
-| #14 | Mobile Responsive Landing | Closed |
-
-### Skill Track Drills
-| Issue | Title | Status |
-|-------|-------|--------|
-| #15 | Scanning Drill Animations | Closed |
-| #16 | Decision Chain Animations | Closed |
-| #17 | Drill Completion Logging | Closed |
-| #18 | Avatar/Player Animations | Closed |
-| #19 | Decision Chain + Scanning Animations and Session/Match Logging | Closed |
-
-### Activity Logging
-| Issue | Title | Status |
-|-------|-------|--------|
-| #20 | Clickable Facilities (Google Maps) + Saved Trainer/Program/Facility Lists | Closed |
-| #21 | MVP: No-Cost Facility Search (Remove Places API Dependency) | Closed |
+| Decision | Doc |
+|----------|-----|
+| Dark HUD Theme System | [theme-system.md](decisions/theme-system.md) |
+| No-Cost Google Maps (MVP) | [maps-no-cost-mvp.md](decisions/maps-no-cost-mvp.md) |
 
 ## Commit Convention
 
@@ -42,12 +25,5 @@ All commits reference their issue:
 feat(scope): description (refs #XX)
 fix(scope): description (refs #XX)
 refactor(scope): description (refs #XX)
-docs(scope): description (refs #XX)
+docs: description
 ```
-
-## Labels
-- `feature` - New functionality
-- `bug` - Something isn't working
-- `enhancement` - Improvement to existing feature
-- `documentation` - Docs only changes
-- `mvp` - Required for MVP release
