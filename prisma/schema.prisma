@@ -109,6 +109,7 @@ model ChildProfile {
   activities        Activity[]
   skillTrackLogs    SkillTrackDrillLog[]
   checkIns          CheckIn[]
+  trainingArcs      TrainingArcState[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -394,6 +395,43 @@ model CheckIn {
   updatedAt DateTime @updatedAt
 
   @@map("check_ins")
+}
+
+// ============================================
+// TRAINING ARCS (Anime-style themed training)
+// ============================================
+
+enum ArcStatus {
+  INACTIVE
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+model TrainingArcState {
+  id       String    @id @default(cuid())
+  childId  String
+  arcId    String    // vision | tempo | decision_chain
+  status   ArcStatus @default(INACTIVE)
+  startDate DateTime?
+  dayIndex Int       @default(0) // Current day within the arc (0-indexed)
+
+  // Pause tracking
+  pauseReason String?
+  pausedAt    DateTime?
+
+  // Completion tracking
+  completedAt       DateTime?
+  sessionsCompleted Int       @default(0)
+
+  child ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Only one active arc per child at a time (enforced in application logic)
+  @@index([childId, status])
+  @@map("training_arc_states")
 }
 
 model Facility {
