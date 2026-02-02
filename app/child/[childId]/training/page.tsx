@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/db'
 import { verifyChildOwnership } from '@/lib/child-helpers'
 import { TrainingSessionContent } from './TrainingSessionContent'
+import { trainingArcs, type ArcId } from '@/lib/arcs/definitions'
 
 interface TrainingPageProps {
   params: {
@@ -34,8 +35,53 @@ export default async function ChildTrainingPage({ params }: TrainingPageProps) {
     ],
   })
 
+  // Fetch active arc state
+  const activeArcState = await prisma.trainingArcState.findFirst({
+    where: {
+      childId: params.childId,
+      status: 'ACTIVE',
+    },
+  })
+
+  // Get arc definition if active
+  const activeArc = activeArcState && trainingArcs[activeArcState.arcId as ArcId]
+    ? {
+        id: activeArcState.id,
+        arcId: activeArcState.arcId as ArcId,
+        dayIndex: activeArcState.dayIndex,
+        sessionsCompleted: activeArcState.sessionsCompleted,
+        definition: trainingArcs[activeArcState.arcId as ArcId],
+      }
+    : null
+
+  // Get arc suggestion if no active arc
+  let arcSuggestion = null
+  if (!activeArc) {
+    // Get completed arc IDs
+    const completedArcs = await prisma.trainingArcState.findMany({
+      where: {
+        childId: params.childId,
+        status: 'COMPLETED',
+      },
+      select: { arcId: true },
+    })
+    const completedArcIds = completedArcs.map((a: { arcId: string }) => a.arcId as ArcId)
+
+    // Simple suggestion: next uncompleted arc
+    const defaultOrder: ArcId[] = ['vision', 'tempo', 'decision_chain']
+    const nextArcId = defaultOrder.find(id => !completedArcIds.includes(id)) || defaultOrder[0]
+
+    arcSuggestion = {
+      arcId: nextArcId,
+      reason: completedArcIds.length === 0
+        ? 'Start your first training arc!'
+        : 'Ready for your next challenge?',
+      definition: trainingArcs[nextArcId],
+    }
+  }
+
   // Group drills by category for session planning
-  const drillsByCategory = drills.reduce((acc, drill) => {
+  const drillsByCategory = drills.reduce((acc: Record<string, typeof drills>, drill) => {
     if (!acc[drill.category]) {
       acc[drill.category] = []
     }
@@ -56,6 +102,8 @@ export default async function ChildTrainingPage({ params }: TrainingPageProps) {
       childId={params.childId}
       drills={defaultSessionDrills}
       allDrills={drills}
+      activeArc={activeArc}
+      arcSuggestion={arcSuggestion}
     />
   )
 }
