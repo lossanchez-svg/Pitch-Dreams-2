@@ -108,6 +108,7 @@ model ChildProfile {
   trainingPlans     TrainingPlan[]
   activities        Activity[]
   skillTrackLogs    SkillTrackDrillLog[]
+  checkIns          CheckIn[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -331,11 +332,68 @@ model Activity {
   focusTags  ActivityFocusTag[]
   highlights ActivityHighlightLog[]
   nextFocus  ActivityNextFocusLog[]
+  checkIn    CheckIn?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("activities")
+}
+
+// ============================================
+// SESSION CHECK-IN (Adaptive Session Mode)
+// ============================================
+
+enum Soreness {
+  NONE
+  LIGHT
+  MEDIUM
+  HIGH
+}
+
+enum SessionMode {
+  PEAK
+  NORMAL
+  LOW_BATTERY
+  RECOVERY
+}
+
+enum MoodEmoji {
+  EXCITED    // 😄
+  FOCUSED    // 🎯
+  OKAY       // 😊
+  TIRED      // 😴
+  STRESSED   // 😰
+}
+
+model CheckIn {
+  id        String      @id @default(cuid())
+  childId   String
+  energy    Int         // 1-5
+  soreness  Soreness    @default(NONE)
+  focus     Int         // 1-5
+  mood      MoodEmoji   @default(OKAY)
+  timeAvail Int         // 10, 20, 30 minutes
+  painFlag  Boolean     @default(false)
+
+  // Calculated mode
+  mode           SessionMode @default(NORMAL)
+  modeExplanation String?    // One-line reason for mode selection
+
+  // Post-session rating (tap-first 1-5)
+  qualityRating Int?
+  completed     Boolean     @default(false)
+
+  // Link to activity (optional, set when session is logged)
+  activityId String? @unique
+
+  child    ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  activity Activity?    @relation(fields: [activityId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("check_ins")
 }
 
 model Facility {
