@@ -24,6 +24,7 @@ A youth soccer training app that helps kids (8-14) develop their skills through 
 ## Future Phases
 
 ### Phase 2: Enhanced Training
+- [ ] Readiness Check (Recover/Build/Push adaptive training)
 - [ ] Drill library expansion
 - [ ] Video tutorials integration
 - [ ] Skill progression tracking
