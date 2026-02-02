@@ -63,3 +63,11 @@ export type { ActivitySummary } from './ActivitySummaryCard'
 
 // Locked States
 export { LockedState, PermissionLockedState, AgeGatedState } from './LockedState'
+
+// Adaptive Session Mode Components
+export { QuickCheckIn } from './QuickCheckIn'
+export type { CheckInResult } from './QuickCheckIn'
+export { SessionModeLabel } from './SessionModeLabel'
+export { CoachNudgeCard } from './CoachNudgeCard'
+export type { CoachNudge } from './CoachNudgeCard'
+export { SessionRating } from './SessionRating'
