@@ -7,7 +7,7 @@
  * NOTE: First Touch is NOT included - it already exists in the main drills system.
  */
 
-export type SkillTrack = 'scanning' | 'decision_chain'
+export type SkillTrack = 'scanning' | 'decision_chain' | 'tempo'
 
 export interface SkillDrillMetric {
   type: 'tap_count' | 'timer' | 'confidence'
@@ -140,6 +140,69 @@ export const skillDrillRegistry: Record<string, SkillDrillConfig> = {
       { type: 'confidence', label: 'Vision', description: 'How easily did you spot the third man?', min: 1, max: 5 },
     ],
   },
+
+  // ===========================================
+  // TEMPO DRILLS
+  // ===========================================
+  'tempo.breathing_rhythm': {
+    key: 'tempo.breathing_rhythm',
+    title: 'Breathing Rhythm',
+    track: 'tempo',
+    durationMinutes: 3,
+    recommendedFrequency: '3x/week',
+    animationKey: 'tempo_breathing',
+    staticSvgPath: '/skills/static/tempo-breathing.svg',
+    whyItMatters: 'Controlled breathing helps you stay calm under pressure. The best players breathe slow when the game speeds up.',
+    coachTips: [
+      'Breathe in for 4 counts, out for 4 counts',
+      'Use this before free kicks, penalties, or when stressed',
+      'Practice until it becomes automatic in tense moments',
+    ],
+    metrics: [
+      { type: 'tap_count', label: 'Breath Cycles', description: 'Tap for each complete breath cycle' },
+      { type: 'confidence', label: 'Calmness', description: 'How calm do you feel?', min: 1, max: 5 },
+    ],
+  },
+
+  'tempo.patience_in_possession': {
+    key: 'tempo.patience_in_possession',
+    title: 'Patience in Possession',
+    track: 'tempo',
+    durationMinutes: 5,
+    recommendedFrequency: '2x/week',
+    animationKey: 'tempo_patience',
+    staticSvgPath: '/skills/static/tempo-patience.svg',
+    whyItMatters: 'Rushing leads to turnovers. This drill builds the confidence to wait for the right moment.',
+    coachTips: [
+      'Count to 2 before releasing the ball - what changes?',
+      'Look for the SECOND option, not just the first',
+      'Speed of play ≠ rushing. Fast can still be calm.',
+    ],
+    metrics: [
+      { type: 'tap_count', label: 'Patient Passes', description: 'Tap when you waited for the right moment' },
+      { type: 'confidence', label: 'Control', description: 'How in control did you feel?', min: 1, max: 5 },
+    ],
+  },
+
+  'tempo.urgency_recognition': {
+    key: 'tempo.urgency_recognition',
+    title: 'Urgency Recognition',
+    track: 'tempo',
+    durationMinutes: 4,
+    recommendedFrequency: '2x/week',
+    animationKey: 'tempo_urgency',
+    staticSvgPath: '/skills/static/tempo-urgency.svg',
+    whyItMatters: 'Knowing WHEN to speed up is just as important as knowing when to slow down. This builds your tempo awareness.',
+    coachTips: [
+      'Look for triggers: space opening, defender off balance, teammate sprinting',
+      'Fast decisions in the final third, patient buildup in your own half',
+      'Ask: "Is this a NOW moment or a WAIT moment?"',
+    ],
+    metrics: [
+      { type: 'tap_count', label: 'Tempo Shifts', description: 'Tap when you correctly shifted tempo' },
+      { type: 'confidence', label: 'Timing', description: 'How well did you read the tempo?', min: 1, max: 5 },
+    ],
+  },
 }
 
 /**
@@ -171,6 +234,11 @@ export function getSkillTracks(): { key: SkillTrack; label: string; description:
       label: 'Decision Chain',
       description: 'Think 1-3 moves ahead - make faster, smarter decisions',
     },
+    {
+      key: 'tempo',
+      label: 'Tempo',
+      description: 'Control the rhythm - know when to speed up and when to stay calm',
+    },
   ]
 }
 
@@ -184,4 +252,7 @@ export const animationFallbacks: Record<string, string> = {
   decision_rde: '/skills/static/decision-rde.svg',
   decision_2step: '/skills/static/decision-2step.svg',
   decision_3rd_man: '/skills/static/decision-3rd-man.svg',
+  tempo_breathing: '/skills/static/tempo-breathing.svg',
+  tempo_patience: '/skills/static/tempo-patience.svg',
+  tempo_urgency: '/skills/static/tempo-urgency.svg',
 }
