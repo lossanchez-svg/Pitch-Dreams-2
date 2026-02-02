@@ -19,7 +19,7 @@ import {
   createCoach,
   createProgram,
 } from '../actions'
-import { getFacilityMapsUrl } from '@/lib/maps'
+import { buildGoogleMapsSearchUrl } from '@/lib/maps'
 import {
   ArrowLeft,
   ArrowRight,
@@ -81,6 +81,7 @@ export function NewActivityContent({
 
   // Facility, Coach, Program selections
   const [selectedFacility, setSelectedFacility] = useState<FacilityData | null>(null)
+  const [facilityMapsUrlFreeform, setFacilityMapsUrlFreeform] = useState<string | undefined>()
   const [selectedCoach, setSelectedCoach] = useState<CoachData | null>(null)
   const [selectedProgram, setSelectedProgram] = useState<ProgramData | null>(null)
 
@@ -109,17 +110,18 @@ export function NewActivityContent({
     else if (step === 'confirm') setStep('reflection')
   }
 
+  // Handler for selecting a facility (with optional freeform maps URL)
+  const handleFacilitySelect = (facility: FacilityData | null, mapsUrlFreeform?: string) => {
+    setSelectedFacility(facility)
+    setFacilityMapsUrlFreeform(mapsUrlFreeform)
+  }
+
   // Handlers for creating new items
   const handleSaveNewFacility = async (facility: Omit<FacilityData, 'id'>) => {
     const result = await createFacility({
       name: facility.name,
       city: facility.city,
-      state: facility.state,
-      country: facility.country,
-      source: facility.source,
-      googlePlaceId: facility.googlePlaceId,
       mapsUrl: facility.mapsUrl,
-      isVerified: facility.isVerified,
       isSaved: facility.isSaved,
     })
 
@@ -130,6 +132,7 @@ export function NewActivityContent({
       }
       setRecentFacilities(prev => [newFacility, ...prev.slice(0, 4)])
       setSelectedFacility(newFacility)
+      setFacilityMapsUrlFreeform(undefined) // Clear freeform since we saved it
     }
   }
 
@@ -186,6 +189,7 @@ export function NewActivityContent({
         programId: selectedProgram?.id,
         // Freeform fallbacks (when typed without saving)
         facilityNameFreeform: !selectedFacility?.id ? selectedFacility?.name : undefined,
+        facilityMapsUrlFreeform: facilityMapsUrlFreeform,
         coachNameFreeform: !selectedCoach?.id ? selectedCoach?.displayName : undefined,
         programNameFreeform: !selectedProgram?.id ? selectedProgram?.name : undefined,
         focusTagIds: selectedFocusTags,
@@ -323,7 +327,7 @@ export function NewActivityContent({
                 savedFacilities={savedFacilities}
                 recentFacilities={recentFacilities}
                 selectedFacility={selectedFacility}
-                onSelect={setSelectedFacility}
+                onSelect={handleFacilitySelect}
                 onSaveNew={handleSaveNewFacility}
               />
             )}
@@ -472,17 +476,16 @@ export function NewActivityContent({
                 <div className="flex justify-between items-center py-2 border-b border-gray-800">
                   <span className="text-gray-400">Facility</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-200">{selectedFacility.name}</span>
-                    {selectedFacility.isVerified && (
-                      <span className="text-xs px-1.5 py-0.5 rounded bg-accent-500/20 text-accent-400">
-                        Verified
-                      </span>
-                    )}
+                    <span className="text-gray-200">
+                      {selectedFacility.name}
+                      {selectedFacility.city && `, ${selectedFacility.city}`}
+                    </span>
                     <a
-                      href={getFacilityMapsUrl(selectedFacility).url}
+                      href={selectedFacility.mapsUrl || facilityMapsUrlFreeform || buildGoogleMapsSearchUrl([selectedFacility.name, selectedFacility.city].filter(Boolean).join(' '))}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary-400 hover:text-primary-300"
+                      title={selectedFacility.mapsUrl || facilityMapsUrlFreeform ? 'Open in Maps' : 'Search on Maps'}
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>

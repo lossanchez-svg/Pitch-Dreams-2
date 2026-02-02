@@ -17,7 +17,7 @@ export type ActivityType =
 
 export type GameIQImpact = 'LOW' | 'MEDIUM' | 'HIGH'
 export type ProgramType = 'TEAM' | 'FUTSAL' | 'INDOOR' | 'CLASS' | 'OTHER'
-export type FacilitySource = 'GOOGLE_MAPS' | 'MANUAL'
+// MVP: All facilities are MANUAL. Future: add FacilitySource when Places API is enabled.
 
 interface CreateActivityInput {
   activityType: ActivityType
@@ -33,6 +33,7 @@ interface CreateActivityInput {
   programId?: string
   // Freeform fallbacks (when typing manually without saving)
   facilityNameFreeform?: string
+  facilityMapsUrlFreeform?: string  // User-provided Maps URL for one-off entries
   coachNameFreeform?: string
   programNameFreeform?: string
   // Tags
@@ -63,6 +64,7 @@ export async function createActivity(childId: string, input: CreateActivityInput
         programId: input.programId,
         // Freeform fallbacks
         facilityNameFreeform: input.facilityNameFreeform,
+        facilityMapsUrlFreeform: input.facilityMapsUrlFreeform,
         coachNameFreeform: input.coachNameFreeform,
         programNameFreeform: input.programNameFreeform,
         // Create focus tag relations
@@ -122,15 +124,11 @@ export async function createActivity(childId: string, input: CreateActivityInput
 // FACILITY ACTIONS
 // ============================================
 
+// MVP: Simplified facility - all manual, no Google verification
 interface CreateFacilityInput {
   name: string
   city?: string | null
-  state?: string | null
-  country?: string | null
-  source?: FacilitySource
-  googlePlaceId?: string | null
-  mapsUrl?: string | null
-  isVerified?: boolean
+  mapsUrl?: string | null  // User-provided, not verified
   isSaved?: boolean
 }
 
@@ -146,13 +144,8 @@ export async function createFacility(input: CreateFacilityInput) {
         parentId: session.user.id,
         name: input.name,
         city: input.city,
-        state: input.state,
-        country: input.country || 'US',
-        source: input.source || 'MANUAL',
-        googlePlaceId: input.googlePlaceId,
         mapsUrl: input.mapsUrl,
-        isVerified: input.isVerified || false,
-        isSaved: input.isSaved || false,
+        isSaved: input.isSaved ?? true,  // Default to saved
         lastUsed: new Date(),
       },
     })

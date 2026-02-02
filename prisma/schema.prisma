@@ -289,10 +289,8 @@ enum GameIQImpact {
   HIGH
 }
 
-enum FacilitySource {
-  GOOGLE_MAPS
-  MANUAL
-}
+// MVP: All facilities are manual. Future: add GOOGLE_MAPS when Places API is enabled.
+// enum FacilitySource { GOOGLE_MAPS, MANUAL }
 
 enum ProgramType {
   TEAM
@@ -320,9 +318,10 @@ model Activity {
   programId  String?
 
   // Freeform fallbacks (when typing manually without saving)
-  facilityNameFreeform String?
-  coachNameFreeform    String?
-  programNameFreeform  String?
+  facilityNameFreeform    String?
+  facilityMapsUrlFreeform String?  // User-provided Maps URL for one-off entries
+  coachNameFreeform       String?
+  programNameFreeform     String?
 
   child    ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
   facility Facility?    @relation(fields: [facilityId], references: [id])
@@ -340,18 +339,11 @@ model Activity {
 }
 
 model Facility {
-  id       String         @id @default(cuid())
-  parentId String         // Owner scope (parent user)
+  id       String  @id @default(cuid())
+  parentId String  // Owner scope (parent user)
   name     String
   city     String?
-  state    String?
-  country  String?        @default("US")
-  source   FacilitySource @default(MANUAL)
-
-  // Google Maps integration
-  googlePlaceId String?   // Google Place ID for verified locations
-  mapsUrl       String?   // Direct maps URL for manual entries
-  isVerified    Boolean   @default(false)
+  mapsUrl  String? // User-provided Google Maps URL (not verified in MVP)
 
   // Reuse tracking
   isSaved  Boolean @default(false)
@@ -362,6 +354,10 @@ model Facility {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Future upgrade: When enabling Places Autocomplete, add googlePlaceId and mark facilities verified
+  // googlePlaceId String?
+  // isVerified    Boolean @default(false)
 
   @@map("facilities")
 }
