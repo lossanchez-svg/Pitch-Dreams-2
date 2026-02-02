@@ -15,7 +15,9 @@ function getResendClient(): Resend | null {
 }
 
 // Email sender configuration
-const FROM_EMAIL = process.env.EMAIL_FROM || 'PitchDreams <noreply@pitchdreams.com>'
+// IMPORTANT: If you haven't verified a domain with Resend, use their test address
+// Once you verify your domain, update EMAIL_FROM to use your domain
+const FROM_EMAIL = process.env.EMAIL_FROM || 'PitchDreams <onboarding@resend.dev>'
 
 interface SendEmailResult {
   success: boolean
@@ -41,6 +43,9 @@ export async function sendPasswordResetEmail(
     console.log('='.repeat(60))
     return { success: true, messageId: 'dev-mode' }
   }
+
+  console.log(`Attempting to send password reset email to: ${email}`)
+  console.log(`From address: ${FROM_EMAIL}`)
 
   try {
     const { data, error } = await resend.emails.send({
@@ -104,15 +109,20 @@ This link will expire in 1 hour. If you didn't request a password reset, you can
     })
 
     if (error) {
-      console.error('Failed to send password reset email:', error)
+      console.error('Failed to send password reset email:', JSON.stringify(error, null, 2))
       return { success: false, error: error.message }
     }
 
-    console.log(`Password reset email sent to ${email}, messageId: ${data?.id}`)
+    console.log(`Password reset email sent successfully!`)
+    console.log(`  To: ${email}`)
+    console.log(`  Message ID: ${data?.id}`)
     return { success: true, messageId: data?.id }
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : 'Unknown error'
     console.error('Error sending password reset email:', errorMessage)
+    if (err instanceof Error && err.stack) {
+      console.error('Stack trace:', err.stack)
+    }
     return { success: false, error: errorMessage }
   }
 }
