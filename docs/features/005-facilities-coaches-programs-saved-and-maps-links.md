@@ -1,41 +1,49 @@
-# Feature: Facilities, Coaches, Programs (Saved + Maps Links)
+# Saved Facilities, Coaches, Programs + Google Maps Links (No-cost MVP)
 
 **Issues:** #20, #21
 
-## Overview
-Allow parents to save frequently-used facilities, coaches, and programs for quick reuse when logging activities. Facilities can link to Google Maps.
+## Problem
+Users want to log training locations and make them clickable when possible, without paying for APIs. They also need saved recurring selections for fast logging.
 
-## MVP Approach (No-Cost)
-We do NOT use Google Places API in MVP. Instead:
-- Users manually enter facility info
-- "Search Google Maps" button opens Maps in new tab
-- Users can optionally paste a Maps URL
+## MVP Goals
+- Facility search without cost:
+  - Type facility name
+  - "Search Google Maps" opens official maps site
+  - Save name locally for reuse
+  - Optionally store a URL for direct "Open in Maps"
+- Saved recurring selections:
+  - Facilities
+  - Coaches (display name only)
+  - Programs / Practices / Leagues (team training, futsal, indoor, classes)
 
-See: [Decision: Maps No-Cost MVP](../decisions/maps-no-cost-mvp.md)
+## UX Requirements
 
-## Components
+### Facility Picker
+- Tabs: **Saved** | **Type Manually**
+- Manual entry:
+  - Name (required)
+  - City (optional)
+  - URL (optional) - "Google Maps link (optional)"
+  - Button: "Search Google Maps" (opens new tab)
+  - "Save for reuse" checkbox (default: ON)
+- Saved tab:
+  - Recent list (last 5)
+  - Saved list
+  - Row actions:
+    - If URL exists → "Open in Maps"
+    - If no URL → "Search Maps"
 
-### FacilityPicker
-Two tabs:
-1. **Saved** - Recent (last 5) + Saved facilities
-2. **Type Manually** - Name, city, Maps URL, save checkbox
+### Coach Picker
+- Type + save
+- Saved + Recent
+- **No contact fields in MVP** (minors safety)
 
-Each saved facility shows:
-- Name + city
-- "Open in Maps" (if mapsUrl exists)
-- "Search Maps" (if no mapsUrl)
+### Program Picker
+- Type + save
+- Saved + Recent
+- Program type enum: `TEAM` | `FUTSAL` | `INDOOR` | `CLASS` | `OTHER`
 
-### CoachPicker
-- Saved/recent coaches
-- Display name only (no contact info for safety)
-- "Save for reuse" option
-
-### ProgramPicker
-- Saved/recent programs
-- Type selection: TEAM, FUTSAL, INDOOR, CLASS, OTHER
-- Color-coded type badges
-
-## Data Storage
+## Data Model (MVP)
 
 ### Saved Items (User-Scoped)
 ```prisma
@@ -58,7 +66,7 @@ model Coach {
 model Program {
   parentId String
   name     String
-  type     ProgramType
+  type     ProgramType  // TEAM | FUTSAL | INDOOR | CLASS | OTHER
   isSaved  Boolean
   lastUsed DateTime?
 }
@@ -74,7 +82,7 @@ model Activity {
 
   // Freeform fallbacks (when typing without saving)
   facilityNameFreeform    String?
-  facilityMapsUrlFreeform String?
+  facilityMapsUrlFreeform String?  // One-off URL
   coachNameFreeform       String?
   programNameFreeform     String?
 }
@@ -87,8 +95,8 @@ buildGoogleMapsSearchUrl(query)
 // => https://www.google.com/maps/search/?api=1&query=...
 
 // Usage:
-// If facility.mapsUrl exists: "Open in Maps" (direct link)
-// Else: "Search Maps" (search URL using name + city)
+// If facility.mapsUrl exists → "Open in Maps" (direct link)
+// Else → "Search Maps" (search URL using name + city)
 ```
 
 ## Files
@@ -98,9 +106,15 @@ buildGoogleMapsSearchUrl(query)
 - `lib/maps.ts`
 - `app/child/[childId]/activity/actions.ts`
 
-## Future Upgrade
-When enabling Google Places API:
-1. Add `googlePlaceId` to Facility model
-2. Add `isVerified` boolean
-3. Implement Places Autocomplete in FacilityPicker
-4. Show "Verified" badge for Places-linked facilities
+## Acceptance Criteria
+- [x] Logging flow supports one-off + saved selections
+- [x] Search Maps opens correct query URL
+- [x] Saved facilities show "Open in Maps" when URL exists
+- [x] No paid APIs used
+
+## Later Upgrade (Post-MVP)
+- Add Google Places Autocomplete
+- Store `googlePlaceId` and `isVerified` flag
+- Optionally "upgrade" manual facilities to verified
+
+See: [Decision: Maps No-Cost MVP](../decisions/maps-no-cost-mvp.md)
