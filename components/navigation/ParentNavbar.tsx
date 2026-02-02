@@ -36,7 +36,7 @@ export function ParentNavbar({
   return (
     <nav
       className={cn(
-        'bg-white border-b border-gray-200 sticky top-0 z-50',
+        'bg-background border-b border-border sticky top-0 z-50',
         className
       )}
     >
@@ -45,7 +45,7 @@ export function ParentNavbar({
           {/* Logo */}
           <Link
             href="/parent/dashboard"
-            className="font-display text-2xl text-indigo-600 hover:text-indigo-700 transition-colors"
+            className="font-display text-2xl text-primary hover:text-primary/80 transition-colors"
           >
             PitchDreams
           </Link>
@@ -57,8 +57,8 @@ export function ParentNavbar({
               className={cn(
                 'text-sm font-medium transition-colors',
                 pathname === '/parent/dashboard'
-                  ? 'text-indigo-600'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
               )}
             >
               Dashboard
@@ -68,8 +68,8 @@ export function ParentNavbar({
               className={cn(
                 'text-sm font-medium transition-colors',
                 pathname === '/parent/controls'
-                  ? 'text-indigo-600'
-                  : 'text-gray-600 hover:text-gray-900'
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
               )}
             >
               Controls
@@ -83,7 +83,7 @@ export function ParentNavbar({
               <div className="relative">
                 <button
                   onClick={() => setChildMenuOpen(!childMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors bg-white"
+                  className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:border-muted-foreground transition-colors bg-background"
                 >
                   {currentChild && (
                     <div
@@ -95,10 +95,10 @@ export function ParentNavbar({
                       {currentChild.nickname.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="text-sm font-medium text-gray-700">
+                  <span className="text-sm font-medium text-foreground">
                     {currentChild?.nickname || 'Select Child'}
                   </span>
-                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
                 </button>
 
                 {/* Dropdown Menu */}
@@ -110,7 +110,7 @@ export function ParentNavbar({
                       onClick={() => setChildMenuOpen(false)}
                     />
                     {/* Menu */}
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                    <div className="absolute right-0 mt-2 w-56 bg-popover rounded-lg shadow-lg border border-border py-2 z-50">
                       {children.map((child) => (
                         <button
                           key={child.id}
@@ -119,8 +119,8 @@ export function ParentNavbar({
                             setChildMenuOpen(false)
                           }}
                           className={cn(
-                            'w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-gray-50 transition-colors',
-                            currentChildId === child.id && 'bg-indigo-50'
+                            'w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-muted transition-colors',
+                            currentChildId === child.id && 'bg-primary/10'
                           )}
                         >
                           <div
@@ -131,7 +131,7 @@ export function ParentNavbar({
                           >
                             {child.nickname.charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-foreground">
                             {child.nickname}
                           </span>
                         </button>
@@ -159,7 +159,7 @@ export function ParentNavbar({
                 variant="ghost"
                 size="sm"
                 onClick={onSignOut}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">Sign Out</span>

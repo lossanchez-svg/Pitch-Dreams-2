@@ -40,6 +40,8 @@ export { QuizCard } from './QuizCard'
 // Skill Track Components
 export { SkillAvatarAnimation } from './SkillAvatarAnimation'
 export { SkillTrackDrillCard } from './SkillTrackDrillCard'
+export { SkillAnimationSlot, getAvailableSkillIds, hasAnimation } from './SkillAnimationSlot'
+export type { AnimationVariant } from './SkillAnimationSlot'
 
 // Activity Logging Components
 export { ActivityTypePicker } from './ActivityTypePicker'
