@@ -31,7 +31,7 @@ export function SkillTrackDrillCard({
 }: SkillTrackDrillCardProps) {
   const [showTips, setShowTips] = useState(false)
 
-  const trackColors = {
+  const trackColors: Record<string, { bg: string; border: string; text: string; badge: string }> = {
     scanning: {
       bg: 'bg-cyan-500/10',
       border: 'border-cyan-500/30',
@@ -43,6 +43,12 @@ export function SkillTrackDrillCard({
       border: 'border-purple-500/30',
       text: 'text-purple-400',
       badge: 'bg-purple-500/20 text-purple-300',
+    },
+    tempo: {
+      bg: 'bg-orange-500/10',
+      border: 'border-orange-500/30',
+      text: 'text-orange-400',
+      badge: 'bg-orange-500/20 text-orange-300',
     },
   }
 

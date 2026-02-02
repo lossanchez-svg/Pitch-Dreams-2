@@ -81,13 +81,14 @@ export default async function ChildTrainingPage({ params }: TrainingPageProps) {
   }
 
   // Group drills by category for session planning
-  const drillsByCategory = drills.reduce((acc: Record<string, typeof drills>, drill) => {
+  type DrillType = typeof drills[number]
+  const drillsByCategory = drills.reduce((acc: Record<string, DrillType[]>, drill: DrillType) => {
     if (!acc[drill.category]) {
       acc[drill.category] = []
     }
     acc[drill.category].push(drill)
     return acc
-  }, {} as Record<string, typeof drills>)
+  }, {} as Record<string, DrillType[]>)
 
   // Create a default session plan (one drill from each category)
   const categories = Object.keys(drillsByCategory)

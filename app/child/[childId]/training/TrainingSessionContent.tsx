@@ -263,7 +263,7 @@ export function TrainingSessionContent({
       )}
 
       {/* Active Arc banner */}
-      {currentArc && flowStep !== 'check-in' && (
+      {currentArc && (
         <div className="mb-6">
           <ArcBanner
             arc={currentArc.definition}

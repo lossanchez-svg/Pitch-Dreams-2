@@ -105,9 +105,10 @@ export function SkillTrackContent({
     ? drillStats.reduce((sum, s) => sum + s.avgConfidence, 0) / drillStats.filter(s => s.totalAttempts > 0).length || 0
     : 0
 
-  const trackIcons = {
+  const trackIcons: Record<SkillTrack, React.ReactNode> = {
     scanning: <Eye className="w-5 h-5" />,
     decision_chain: <Brain className="w-5 h-5" />,
+    tempo: <Target className="w-5 h-5" />,
   }
 
   return (
