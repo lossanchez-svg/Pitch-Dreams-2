@@ -71,3 +71,9 @@ export { SessionModeLabel } from './SessionModeLabel'
 export { CoachNudgeCard } from './CoachNudgeCard'
 export type { CoachNudge } from './CoachNudgeCard'
 export { SessionRating } from './SessionRating'
+
+// Training Arc Components
+export { ArcCard } from './ArcCard'
+export { ArcBanner } from './ArcBanner'
+export { ArcCompletionScreen } from './ArcCompletionScreen'
+export { ArcSuggestionCard } from './ArcSuggestionCard'
