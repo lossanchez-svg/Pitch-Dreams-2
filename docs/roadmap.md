@@ -18,10 +18,11 @@
 | 3 | Drill avatar animation system (Scanning, Decision Chain) | #15-#19 | Done |
 | 4 | Unified Activity Log (1:1, team, facility, games, futsal, indoor) | #19-#20 | Done |
 | 5 | Facilities/Coaches/Programs saved selections + Maps linking | #20-#21 | Done |
+| 6 | Adaptive Session Mode (Check-In + Coach Nudges) | #22 | In Progress |
 
 ## Next (Phase 2: Enhanced Training)
 
-- [ ] Readiness Check (Recover/Build/Push adaptive training)
+- [x] Adaptive Session Mode (Peak/Normal/Low Battery/Recovery)
 - [ ] Drill library expansion
 - [ ] Skill progression tracking
 - [ ] Parent dashboard improvements

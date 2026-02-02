@@ -9,7 +9,7 @@ Each GitHub Issue links to its matching feature doc.
 | Drill Avatar Animations + Scanning/Decision Chain | #15-#19 | [003-drill-avatar-animations-scanning-decision-chain.md](features/003-drill-avatar-animations-scanning-decision-chain.md) |
 | Activity Log (Sessions + Matches) | #19-#20 | [004-activity-log-sessions-and-matches.md](features/004-activity-log-sessions-and-matches.md) |
 | Saved Facilities/Coaches/Programs + Maps Links | #20-#21 | [005-facilities-coaches-programs-saved-and-maps-links.md](features/005-facilities-coaches-programs-saved-and-maps-links.md) |
-| Readiness Check + Adaptive Training | (Planned) | [006-readiness-check-adaptive-training.md](features/006-readiness-check-adaptive-training.md) |
+| Adaptive Session Mode (Check-In + Coach Nudges) | #22 | [006-readiness-check-adaptive-training.md](features/006-readiness-check-adaptive-training.md) |
 
 ## Decision Records
 
