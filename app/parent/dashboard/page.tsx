@@ -83,7 +83,8 @@ export default async function ParentDashboardPage() {
   })
 
   // Transform data for the component
-  const childrenData = children.map((child) => {
+  type ChildRecord = typeof children[number]
+  const childrenData = children.map((child: ChildRecord) => {
     // Calculate activity summaries
     const activityMap = new Map<string, { count: number; totalMinutes: number; totalGameIQ: number }>()
 

@@ -41,7 +41,8 @@ export default async function ChildHomePage({ params }: ChildHomePageProps) {
     },
   })
 
-  const drillsData = suggestedDrills.map(drill => ({
+  type SuggestedDrill = typeof suggestedDrills[number]
+  const drillsData = suggestedDrills.map((drill: SuggestedDrill) => ({
     id: drill.id,
     title: drill.name,
     category: drill.category,
