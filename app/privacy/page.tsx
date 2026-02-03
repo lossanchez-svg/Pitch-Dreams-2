@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function PrivacyPolicyPage() {
   const lastUpdated = 'February 3, 2026'
-  const contactEmail = 'privacy@pitchdreams.com'
+  const contactEmail = 'pitchdreams@gmail.com'
 
   return (
     <div className="min-h-screen bg-gray-950">
