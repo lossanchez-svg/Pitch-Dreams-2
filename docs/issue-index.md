@@ -11,6 +11,8 @@ Each GitHub Issue links to its matching feature doc.
 | Saved Facilities/Coaches/Programs + Maps Links | #20-#21 | [005-facilities-coaches-programs-saved-and-maps-links.md](features/005-facilities-coaches-programs-saved-and-maps-links.md) |
 | Adaptive Session Mode (Check-In + Coach Nudges) | #22 | [006-readiness-check-adaptive-training.md](features/006-readiness-check-adaptive-training.md) |
 | Training Arcs (Vision, Tempo, Decision Chain) | #23 | [007-training-arcs.md](features/007-training-arcs.md) |
+| Release Candidate + Testing Plan | #25 | [008-release-candidate-and-testing.md](features/008-release-candidate-and-testing.md) |
+| Hosting Migration (Netlify → Vercel) | #25 | [009-hosting-migration-from-netlify.md](features/009-hosting-migration-from-netlify.md) |
 
 ## Decision Records
 

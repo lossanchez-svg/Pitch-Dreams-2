@@ -29,6 +29,41 @@
 - [ ] Skill progression tracking
 - [ ] Parent dashboard improvements
 
+## Post-Issue-Closure: RC Testing & Launch
+
+The following steps happen after all MVP issues are closed:
+
+### 1. Release Candidate Checkpoint
+- Tag `v0.1.0-rc` on main branch
+- Lock main for bugfix-only (no new features)
+- Generate CHANGELOG.md entry
+- See: [008-release-candidate-and-testing.md](features/008-release-candidate-and-testing.md)
+
+### 2. End-to-End Happy Path Testing
+- **Child Flow**: Landing → Start → Check-In → Plan Preview → Session → Summary → Arc Progress
+- **Parent Flow**: Dashboard → Safety/Trust → "What is an Arc?" → Controls
+- Document any bugs found, fix before pilot
+
+### 3. Pilot Test (3-5 Users)
+- Recruit 3-5 real users (parents + children)
+- Observe without explaining
+- Ask only 3 questions post-session
+- Ignore feature requests (note for v0.2)
+
+### 4. Pattern Analysis & v0.2 Focus Selection
+- Identify ONE theme from pilot observations
+- Select v0.2 focus area (e.g., drill library, parent dashboard, etc.)
+- Document decision
+
+### 5. Hosting Migration
+- Migrate from Netlify to chosen host (Vercel recommended)
+- Update DNS at Porkbun for pitchdreams.soccer and pitchdreams.com
+- See: [009-hosting-migration-from-netlify.md](features/009-hosting-migration-from-netlify.md)
+
+### 6. Parent Safety/Trust & Onboarding Docs
+- Finalize parent-facing documentation
+- Ensure onboarding flow is clear and safe
+
 ## Later (Post-MVP)
 
 - [ ] Google Places Autocomplete (paid API) to verify facilities
