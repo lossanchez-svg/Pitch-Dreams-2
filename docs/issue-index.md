@@ -12,7 +12,7 @@ Each GitHub Issue links to its matching feature doc.
 | Adaptive Session Mode (Check-In + Coach Nudges) | #22 | [006-readiness-check-adaptive-training.md](features/006-readiness-check-adaptive-training.md) |
 | Training Arcs (Vision, Tempo, Decision Chain) | #23 | [007-training-arcs.md](features/007-training-arcs.md) |
 | Release Candidate + Testing Plan | #25 | [008-release-candidate-and-testing.md](features/008-release-candidate-and-testing.md) |
-| Hosting Migration (Netlify → Vercel) | #25 | [009-hosting-migration-from-netlify.md](features/009-hosting-migration-from-netlify.md) |
+| Hosting Migration (Netlify → Vercel) | #25, #26 | [009-hosting-migration-from-netlify.md](features/009-hosting-migration-from-netlify.md) |
 
 ## Decision Records
 
@@ -20,6 +20,7 @@ Each GitHub Issue links to its matching feature doc.
 |----------|-----|
 | Dark HUD Theme System | [theme-system.md](decisions/theme-system.md) |
 | No-Cost Google Maps (MVP) | [maps-no-cost-mvp.md](decisions/maps-no-cost-mvp.md) |
+| Vercel Single Project Hosting | [hosting-vercel-single-project.md](decisions/hosting-vercel-single-project.md) |
 
 ## Commit Convention
 
