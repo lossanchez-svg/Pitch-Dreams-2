@@ -42,7 +42,7 @@ export default function StyleguidePage() {
             <Link href="/" className="text-primary-500 hover:underline">
               ← Back to Home
             </Link>
-            <Link href="/DESIGN_SYSTEM.md" className="text-primary-500 hover:underline">
+            <Link href="https://github.com/lossanchez-svg/Pitch-Dreams-2/blob/main/DESIGN_SYSTEM.md" target="_blank" className="text-primary-500 hover:underline">
               View Full Documentation
             </Link>
           </div>
@@ -744,7 +744,7 @@ export default function StyleguidePage() {
                 <li>UI Pattern Library: Screen patterns with wireframes and reasoning</li>
                 <li>Implementation guidance: Tailwind config, Radix UI setup, accessibility</li>
               </ul>
-              <Link href="/DESIGN_SYSTEM.md" target="_blank" className="inline-block">
+              <Link href="https://github.com/lossanchez-svg/Pitch-Dreams-2/blob/main/DESIGN_SYSTEM.md" target="_blank" className="inline-block">
                 <Button variant="primary">
                   <BookOpen className="w-5 h-5 mr-2" />
                   View Full Documentation
