@@ -7,7 +7,7 @@ export const metadata = {
 }
 
 export default function ContactPage() {
-  const contactEmail = 'pitchdreams@gmail.com'
+  const contactEmail = 'pitchdreams.soccer@gmail.com'
 
   return (
     <div className="min-h-screen bg-gray-950">
