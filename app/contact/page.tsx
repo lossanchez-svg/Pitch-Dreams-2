@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { Target, ArrowLeft, Mail, MessageSquare, Bug, Lightbulb } from 'lucide-react'
+import { Mail, MessageSquare, Bug, Lightbulb } from 'lucide-react'
+import { PublicHeader } from '@/components/navigation/PublicHeader'
+import { PublicFooter } from '@/components/navigation/PublicFooter'
 
 export const metadata = {
   title: 'Contact | Pitch Dreams',
@@ -10,28 +12,11 @@ export default function ContactPage() {
   const contactEmail = 'pitchdreams.soccer@gmail.com'
 
   return (
-    <div className="min-h-screen bg-gray-950">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center">
-              <Target className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-display font-bold text-white tracking-wide">Pitch Dreams</span>
-          </Link>
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-gray-950 flex flex-col">
+      <PublicHeader />
 
       {/* Content */}
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-4xl">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 max-w-4xl flex-1">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-12 h-12 bg-primary-500/20 border border-primary-500/30 rounded-lg flex items-center justify-center">
             <Mail className="w-6 h-6 text-primary-400" />
@@ -53,7 +38,7 @@ export default function ContactPage() {
               </p>
               <a
                 href={`mailto:${contactEmail}`}
-                className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-medium px-5 py-3 rounded-lg transition-colors no-underline text-base"
+                className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-medium px-5 py-3 rounded-lg transition-colors no-underline text-base min-h-[44px]"
               >
                 <Mail className="w-5 h-5" />
                 {contactEmail}
@@ -141,33 +126,7 @@ export default function ContactPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-950 border-t border-gray-800 mt-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary-500/20 border border-primary-500/30 rounded-lg flex items-center justify-center">
-                <Target className="w-4 h-4 text-primary-400" />
-              </div>
-              <span className="text-sm font-display font-semibold text-gray-400">Pitch Dreams</span>
-            </div>
-            <div className="flex items-center gap-6 text-sm">
-              <Link href="/" className="text-gray-500 hover:text-white transition-colors">
-                Home
-              </Link>
-              <Link href="/about" className="text-gray-500 hover:text-white transition-colors">
-                About
-              </Link>
-              <Link href="/privacy" className="text-gray-500 hover:text-white transition-colors">
-                Privacy
-              </Link>
-            </div>
-            <p className="text-sm text-gray-600">
-              © {new Date().getFullYear()} Pitch Dreams
-            </p>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }
