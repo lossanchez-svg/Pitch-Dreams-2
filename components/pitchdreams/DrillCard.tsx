@@ -1,8 +1,9 @@
 'use client'
 
-import { Clock, Target, Lightbulb } from 'lucide-react'
+import { Clock, Target, Lightbulb, type LucideIcon } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
+import Image from 'next/image'
 
 interface DrillCardProps {
   title: string
@@ -12,6 +13,12 @@ interface DrillCardProps {
   proTip?: string
   onSelect: () => void
   isSelected?: boolean
+  /** Lucide icon component to display */
+  icon?: LucideIcon
+  /** Path to art/illustration image (takes precedence over icon) */
+  artSrc?: string
+  /** Alt text for art image */
+  artAlt?: string
 }
 
 const difficultyColors = {
@@ -33,7 +40,10 @@ export function DrillCard({
   difficulty,
   proTip,
   onSelect,
-  isSelected = false
+  isSelected = false,
+  icon: Icon,
+  artSrc,
+  artAlt,
 }: DrillCardProps) {
   return (
     <Card
@@ -45,6 +55,23 @@ export function DrillCard({
       onClick={onSelect}
     >
       <div className="p-4">
+        {/* Art/Icon display area */}
+        {(artSrc || Icon) && (
+          <div className="mb-3 flex items-center justify-center h-20 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-100 dark:border-primary-800">
+            {artSrc ? (
+              <Image
+                src={artSrc}
+                alt={artAlt || title}
+                width={64}
+                height={64}
+                className="object-contain"
+              />
+            ) : Icon ? (
+              <Icon className="w-10 h-10 text-primary-500 dark:text-primary-400" />
+            ) : null}
+          </div>
+        )}
+
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">

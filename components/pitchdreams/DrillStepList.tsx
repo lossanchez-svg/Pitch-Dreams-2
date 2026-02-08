@@ -2,12 +2,15 @@
 
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { SkillAnimationSlot } from './SkillAnimationSlot'
 
 interface DrillStep {
   id: string
   title: string
   description?: string
   completed?: boolean
+  /** Optional skill ID for displaying skill animation */
+  skillId?: string
 }
 
 interface DrillStepListProps {
@@ -58,6 +61,16 @@ export function DrillStepList({
                   <span>{index + 1}</span>
                 )}
               </div>
+
+              {/* Skill Animation (if available) */}
+              {step.skillId && isCurrent && (
+                <SkillAnimationSlot
+                  skillId={step.skillId}
+                  variant={isCurrent ? 'anim' : 'static'}
+                  size="sm"
+                  className="flex-shrink-0"
+                />
+              )}
 
               {/* Step Content */}
               <div className="flex-1 min-w-0">

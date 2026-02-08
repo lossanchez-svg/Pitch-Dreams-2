@@ -1,4 +1,4 @@
-import { ParentNavbar } from '@/components/navigation/ParentNavbar'
+import { ParentHeader } from '@/components/navigation/ParentHeader'
 
 export default function ParentLayout({
   children,
@@ -6,8 +6,8 @@ export default function ParentLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <ParentNavbar />
+    <div className="min-h-screen bg-background">
+      <ParentHeader />
       <main className="pb-8">{children}</main>
     </div>
   )

@@ -65,6 +65,9 @@ export async function exportChildData(childId: string) {
     throw new Error('Child not found or access denied')
   }
 
+  // Define session log type
+  type SessionLogRecord = typeof child.sessionLogs[number]
+
   // Return data as JSON
   return {
     child: {
@@ -73,7 +76,7 @@ export async function exportChildData(childId: string) {
       position: child.position,
       createdAt: child.createdAt,
     },
-    sessions: child.sessionLogs.map(s => ({
+    sessions: child.sessionLogs.map((s: SessionLogRecord) => ({
       date: s.createdAt,
       activityType: s.activityType,
       effortLevel: s.effortLevel,

@@ -546,6 +546,208 @@ Lunging at the ball (diving in) usually means the attacker dribbles past you. Be
 
   console.log(`✅ Created ${challenges.length} skill challenges`)
 
+  // ============================================
+  // FACILITIES (Issue #20 - Enhanced Activity Logging)
+  // ============================================
+  // Note: Facilities are now user-scoped (parentId required).
+  // Users create and save facilities through the Activity Log UI.
+  // Example facility entry (for reference):
+  // - Name: "Touch N Go"
+  // - City: "Tustin", State: "CA"
+  // - Source: MANUAL (user-entered) or GOOGLE_MAPS (place ID linked)
+  // - isVerified: true only when googlePlaceId is provided
+  //
+  // Coaches and Programs are also user-scoped and created via UI.
+  console.log(`ℹ️  Facilities/Coaches/Programs are now user-created via Activity Log`)
+
+  // ============================================
+  // FOCUS TAGS (Issue #19 - Activity Logging)
+  // ============================================
+
+  const focusTags = [
+    // Skill tracks (new)
+    { key: 'scanning', label: 'Scanning', description: 'See the field early', category: 'skill_track' },
+    { key: 'decision_chain', label: 'Decision Chain', description: 'Next 1-3 moves', category: 'skill_track' },
+    // General skills (existing categories)
+    { key: 'ball_mastery', label: 'Ball Mastery', description: 'Ball control and close touches', category: 'general' },
+    { key: 'passing', label: 'Passing', description: 'Accuracy and weight of pass', category: 'general' },
+    { key: 'finishing', label: 'Finishing', description: 'Shooting and scoring', category: 'general' },
+    { key: 'defending', label: 'Defending', description: '1v1 and team defense', category: 'general' },
+    { key: 'speed_agility', label: 'Speed & Agility', description: 'Quick feet and movement', category: 'general' },
+    { key: 'first_touch', label: 'First Touch', description: 'Receiving and controlling the ball', category: 'general' },
+    { key: 'game_iq', label: 'Game IQ', description: 'Tactical understanding', category: 'general' },
+    { key: 'weak_foot', label: 'Weak Foot', description: 'Developing both feet', category: 'general' },
+  ]
+
+  for (const tag of focusTags) {
+    await prisma.focusTag.create({ data: tag })
+  }
+
+  console.log(`✅ Created ${focusTags.length} focus tags`)
+
+  // ============================================
+  // HIGHLIGHT CHIPS (Issue #19 - Activity Logging)
+  // ============================================
+
+  const highlightChips = [
+    { key: 'created_space', label: 'Created space', icon: '🎯' },
+    { key: 'won_ball_back', label: 'Won ball back', icon: '💪' },
+    { key: 'scanned_early', label: 'Scanned early', icon: '👀' },
+    { key: 'good_decision', label: 'Good decision', icon: '🧠' },
+    { key: 'completed_passes', label: 'Completed passes', icon: '✅' },
+    { key: 'scored_goal', label: 'Scored a goal', icon: '⚽' },
+    { key: 'clean_tackle', label: 'Clean tackle', icon: '🛡️' },
+    { key: 'kept_composure', label: 'Kept composure', icon: '😤' },
+    { key: 'used_weak_foot', label: 'Used weak foot', icon: '🦶' },
+    { key: 'high_intensity', label: 'High intensity', icon: '🔥' },
+  ]
+
+  for (const chip of highlightChips) {
+    await prisma.highlightChip.create({ data: chip })
+  }
+
+  console.log(`✅ Created ${highlightChips.length} highlight chips`)
+
+  // ============================================
+  // NEXT FOCUS CHIPS (Issue #19 - Activity Logging)
+  // ============================================
+
+  const nextFocusChips = [
+    { key: 'more_scanning', label: 'More scanning', icon: '👁️' },
+    { key: 'faster_decisions', label: 'Faster decisions', icon: '⚡' },
+    { key: 'better_first_touch', label: 'Better first touch', icon: '🎯' },
+    { key: 'stronger_defense', label: 'Stronger defense', icon: '🛡️' },
+    { key: 'shooting_accuracy', label: 'Shooting accuracy', icon: '🥅' },
+    { key: 'passing_weight', label: 'Passing weight', icon: '📐' },
+    { key: 'communication', label: 'Communication', icon: '📢' },
+    { key: 'fitness_endurance', label: 'Fitness/Endurance', icon: '🏃' },
+    { key: 'weak_foot_practice', label: 'Weak foot practice', icon: '🦶' },
+    { key: 'game_awareness', label: 'Game awareness', icon: '🧠' },
+  ]
+
+  for (const chip of nextFocusChips) {
+    await prisma.nextFocusChip.create({ data: chip })
+  }
+
+  console.log(`✅ Created ${nextFocusChips.length} next focus chips`)
+
+  // ============================================
+  // SKILL TRACK DRILLS (Issue #19 - Scanning + Decision Chain)
+  // No First Touch duplication - these are new skill tracks only
+  // ============================================
+
+  const skillTrackDrills = [
+    // SCANNING DRILLS
+    {
+      key: 'scanning.3point_scan',
+      title: '3-Point Scan',
+      track: 'scanning',
+      durationMinutes: 5,
+      recommendedFrequency: '2x/week',
+      animationKey: 'scanning-3point',
+      whyItMatters: 'Scanning buys time before your first touch.',
+      coachTips: JSON.stringify([
+        'Scan early. Decide before the ball arrives.',
+        'Look left, right, and behind before receiving.',
+        'Quick head movements—don\'t stare, snapshot!',
+      ]),
+      metricConfig: JSON.stringify({
+        type: 'tap_counter',
+        label: 'Scan reps completed',
+        targetMin: 10,
+        targetMax: 20,
+      }),
+    },
+    {
+      key: 'scanning.color_cue',
+      title: 'Color Cue Scan',
+      track: 'scanning',
+      durationMinutes: 5,
+      recommendedFrequency: '2x/week',
+      animationKey: 'scanning-color-cue',
+      whyItMatters: 'Better awareness makes every action faster.',
+      coachTips: JSON.stringify([
+        'Eyes first, feet second.',
+        'Call out the color before you move.',
+        'Build speed gradually—accuracy first!',
+      ]),
+      metricConfig: JSON.stringify({
+        type: 'fraction',
+        label: 'Correct cues',
+        numeratorLabel: 'Correct',
+        denominatorLabel: 'Total reps',
+      }),
+    },
+
+    // DECISION CHAIN DRILLS
+    {
+      key: 'decision_chain.receive_decide_execute',
+      title: 'Receive → Decide → Execute',
+      track: 'decision_chain',
+      durationMinutes: 6,
+      recommendedFrequency: '2x/week',
+      animationKey: 'decision-chain-rde',
+      whyItMatters: 'Good players think ahead; great players act ahead.',
+      coachTips: JSON.stringify([
+        'Know your exit before the ball arrives.',
+        'Scan → Receive → Execute in one flow.',
+        'Don\'t hesitate—commit to your decision.',
+      ]),
+      metricConfig: JSON.stringify({
+        type: 'chip_select_confidence',
+        label: 'Decision chosen',
+        options: ['Pass', 'Turn', 'Dribble', 'Shoot'],
+        confidenceLabel: 'Confidence (1-5)',
+      }),
+    },
+    {
+      key: 'decision_chain.two_step_advantage',
+      title: 'Two-Step Advantage',
+      track: 'decision_chain',
+      durationMinutes: 6,
+      recommendedFrequency: '1x/week',
+      animationKey: 'decision-chain-two-step',
+      whyItMatters: 'The second action is where separation happens.',
+      coachTips: JSON.stringify([
+        'Beat the defender with your second move.',
+        'Think: touch 1 = control, touch 2 = advantage.',
+        'Visualize both moves before the ball arrives.',
+      ]),
+      metricConfig: JSON.stringify({
+        type: 'chip_select_counter',
+        label: 'Next 2 actions',
+        options: ['Touch-Pass', 'Touch-Turn', 'Touch-Shoot', 'Fake-Dribble'],
+        countLabel: 'Completion count',
+      }),
+    },
+    {
+      key: 'decision_chain.third_man_awareness',
+      title: 'Third-Man Awareness (Intro)',
+      track: 'decision_chain',
+      durationMinutes: 5,
+      recommendedFrequency: '1x/week',
+      animationKey: 'decision-chain-third-man',
+      whyItMatters: 'Movement off-ball unlocks the next play.',
+      coachTips: JSON.stringify([
+        'Pass, move, appear again.',
+        'Always look for the "third option" player.',
+        'Off-ball runs create on-ball chances.',
+      ]),
+      metricConfig: JSON.stringify({
+        type: 'tap_yes_no',
+        label: 'Recognition reps',
+        countLabel: 'Reps',
+        yesNoLabel: 'Found the third?',
+      }),
+    },
+  ]
+
+  for (const drill of skillTrackDrills) {
+    await prisma.skillTrackDrill.create({ data: drill })
+  }
+
+  console.log(`✅ Created ${skillTrackDrills.length} skill track drills (Scanning + Decision Chain)`)
+
   console.log('🎉 Seeding complete!')
 }
 
