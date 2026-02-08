@@ -57,13 +57,15 @@ export default async function ChildLearnPage({ params }: LearnPageProps) {
   })
 
   // Create a map of lesson progress
+  type LessonProgressRecord = typeof lessonProgress[number]
+  type LessonRecord = typeof lessons[number]
   const progressMap = new Map(
-    lessonProgress.map((p) => [p.lessonId, p])
+    lessonProgress.map((p: LessonProgressRecord) => [p.lessonId, p])
   )
 
   // Combine lessons with progress and parse quiz questions
-  const lessonsWithProgress = lessons.map((lesson) => {
-    const progress = progressMap.get(lesson.id)
+  const lessonsWithProgress = lessons.map((lesson: LessonRecord) => {
+    const progress = progressMap.get(lesson.id) as LessonProgressRecord | undefined
     return {
       id: lesson.id,
       title: lesson.title,

@@ -21,35 +21,41 @@ export default async function ChildProgressPage({ params }: ChildProgressPagePro
     orderBy: { createdAt: 'desc' },
   })
 
+  // Define session type from Prisma result
+  type SessionRecord = typeof sessions[number]
+
   // Calculate stats
   const currentStreak = calculateStreak(sessions)
   const totalSessions = sessions.length
   const thisMonthSessions = sessions.filter(
-    s => new Date(s.createdAt) >= startOfMonth(new Date())
+    (s: SessionRecord) => new Date(s.createdAt) >= startOfMonth(new Date())
   ).length
   const thisWeekSessions = sessions.filter(
-    s => new Date(s.createdAt) >= startOfWeek(new Date())
+    (s: SessionRecord) => new Date(s.createdAt) >= startOfWeek(new Date())
   ).length
 
   // Calculate average effort level
   const avgRpe = sessions.length > 0
-    ? (sessions.reduce((sum, s) => sum + (s.effortLevel || 0), 0) / sessions.length).toFixed(1)
+    ? (sessions.reduce((sum: number, s: SessionRecord) => sum + (s.effortLevel || 0), 0) / sessions.length).toFixed(1)
     : '0.0'
 
   // Calculate total training minutes
-  const totalMinutes = sessions.reduce((sum, s) => sum + (s.duration || 0), 0)
+  const totalMinutes = sessions.reduce((sum: number, s: SessionRecord) => sum + (s.duration || 0), 0)
 
   // Find max streak (simplified - just use current streak for now)
   const maxStreak = currentStreak
 
   // Get recent sessions for display
-  const recentSessions = sessions.slice(0, 5).map(s => ({
+  const recentSessions = sessions.slice(0, 5).map((s: SessionRecord) => ({
     date: new Date(s.createdAt).toLocaleDateString(),
     drill: s.activityType || 'Training Session',
     rpe: s.effortLevel || 0,
     mood: s.mood || 'N/A',
     duration: s.duration || 0,
   }))
+
+  // Type for recent session display
+  type RecentSession = typeof recentSessions[number]
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -138,7 +144,7 @@ export default async function ChildProgressPage({ params }: ChildProgressPagePro
           <h2 className="font-display text-2xl text-primary-400 mb-4">Recent Sessions</h2>
           <Card variant="hud-panel" className="p-6">
             <div className="space-y-3">
-              {recentSessions.map((session, index) => (
+              {recentSessions.map((session: RecentSession, index: number) => (
                 <div
                   key={index}
                   className="flex items-center justify-between py-3 border-b border-gray-800 last:border-0"

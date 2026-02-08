@@ -27,6 +27,11 @@ model ParentUser {
   accounts            Account[]
   passwordResetTokens PasswordResetToken[]
 
+  // Saved items for activity logging
+  facilities Facility[]
+  coaches    Coach[]
+  programs   Program[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -101,6 +106,10 @@ model ChildProfile {
   challengeAttempts SkillChallengeAttempt[]
   lessonProgress    LessonProgress[]
   trainingPlans     TrainingPlan[]
+  activities        Activity[]
+  skillTrackLogs    SkillTrackDrillLog[]
+  checkIns          CheckIn[]
+  trainingArcs      TrainingArcState[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -260,4 +269,342 @@ model LessonProgress {
 
   @@unique([childId, lessonId])
   @@map("lesson_progress")
+}
+
+// ============================================
+// ACTIVITY LOGGING (Sessions, Games, Classes)
+// ============================================
+
+enum ActivityType {
+  SELF_TRAINING
+  COACH_1ON1
+  TEAM_TRAINING
+  FACILITY_CLASS
+  OFFICIAL_GAME
+  FUTSAL_GAME
+  INDOOR_LEAGUE_GAME
+}
+
+enum GameIQImpact {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+// MVP: All facilities are manual. Future: add GOOGLE_MAPS when Places API is enabled.
+// enum FacilitySource { GOOGLE_MAPS, MANUAL }
+
+enum ProgramType {
+  TEAM
+  FUTSAL
+  INDOOR
+  CLASS
+  OTHER
+}
+
+model Activity {
+  id              String       @id @default(cuid())
+  childId         String
+  activityType    ActivityType
+  startAt         DateTime     @default(now())
+  durationMinutes Int
+  locationName    String?
+  opponentName    String?
+  intensityRPE    Int?         // 1-10
+  gameIQImpact    GameIQImpact @default(MEDIUM)
+  notes           String?      // Parent-gated free text
+
+  // Stable references (when using saved items)
+  facilityId String?
+  coachId    String?
+  programId  String?
+
+  // Freeform fallbacks (when typing manually without saving)
+  facilityNameFreeform    String?
+  facilityMapsUrlFreeform String?  // User-provided Maps URL for one-off entries
+  coachNameFreeform       String?
+  programNameFreeform     String?
+
+  child    ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  facility Facility?    @relation(fields: [facilityId], references: [id])
+  coach    Coach?       @relation(fields: [coachId], references: [id])
+  program  Program?     @relation(fields: [programId], references: [id])
+
+  focusTags  ActivityFocusTag[]
+  highlights ActivityHighlightLog[]
+  nextFocus  ActivityNextFocusLog[]
+  checkIn    CheckIn?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("activities")
+}
+
+// ============================================
+// SESSION CHECK-IN (Adaptive Session Mode)
+// ============================================
+
+enum Soreness {
+  NONE
+  LIGHT
+  MEDIUM
+  HIGH
+}
+
+enum SessionMode {
+  PEAK
+  NORMAL
+  LOW_BATTERY
+  RECOVERY
+}
+
+enum MoodEmoji {
+  EXCITED    // 😄
+  FOCUSED    // 🎯
+  OKAY       // 😊
+  TIRED      // 😴
+  STRESSED   // 😰
+}
+
+model CheckIn {
+  id        String      @id @default(cuid())
+  childId   String
+  energy    Int         // 1-5
+  soreness  Soreness    @default(NONE)
+  focus     Int         // 1-5
+  mood      MoodEmoji   @default(OKAY)
+  timeAvail Int         // 10, 20, 30 minutes
+  painFlag  Boolean     @default(false)
+
+  // Calculated mode
+  mode           SessionMode @default(NORMAL)
+  modeExplanation String?    // One-line reason for mode selection
+
+  // Post-session rating (tap-first 1-5)
+  qualityRating Int?
+  completed     Boolean     @default(false)
+
+  // Link to activity (optional, set when session is logged)
+  activityId String? @unique
+
+  child    ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+  activity Activity?    @relation(fields: [activityId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("check_ins")
+}
+
+// ============================================
+// TRAINING ARCS (Anime-style themed training)
+// ============================================
+
+enum ArcStatus {
+  INACTIVE
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+model TrainingArcState {
+  id       String    @id @default(cuid())
+  childId  String
+  arcId    String    // vision | tempo | decision_chain
+  status   ArcStatus @default(INACTIVE)
+  startDate DateTime?
+  dayIndex Int       @default(0) // Current day within the arc (0-indexed)
+
+  // Pause tracking
+  pauseReason String?
+  pausedAt    DateTime?
+
+  // Completion tracking
+  completedAt       DateTime?
+  sessionsCompleted Int       @default(0)
+
+  child ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Only one active arc per child at a time (enforced in application logic)
+  @@index([childId, status])
+  @@map("training_arc_states")
+}
+
+model Facility {
+  id       String  @id @default(cuid())
+  parentId String  // Owner scope (parent user)
+  name     String
+  city     String?
+  mapsUrl  String? // User-provided Google Maps URL (not verified in MVP)
+
+  // Reuse tracking
+  isSaved  Boolean @default(false)
+  lastUsed DateTime?
+
+  parent     ParentUser @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Future upgrade: When enabling Places Autocomplete, add googlePlaceId and mark facilities verified
+  // googlePlaceId String?
+  // isVerified    Boolean @default(false)
+
+  @@map("facilities")
+}
+
+model Coach {
+  id          String  @id @default(cuid())
+  parentId    String  // Owner scope (parent user)
+  displayName String
+  notes       String?
+
+  // Reuse tracking
+  isSaved  Boolean @default(false)
+  lastUsed DateTime?
+
+  parent     ParentUser @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("coaches")
+}
+
+model Program {
+  id       String      @id @default(cuid())
+  parentId String      // Owner scope (parent user)
+  name     String
+  type     ProgramType @default(OTHER)
+
+  // Reuse tracking
+  isSaved  Boolean @default(false)
+  lastUsed DateTime?
+
+  parent     ParentUser @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("programs")
+}
+
+// Focus tags for activities (scanning, decision_chain, etc.)
+model FocusTag {
+  id          String @id @default(cuid())
+  key         String @unique
+  label       String
+  description String?
+  category    String // "skill_track" | "general"
+
+  activityTags ActivityFocusTag[]
+
+  @@map("focus_tags")
+}
+
+model ActivityFocusTag {
+  id         String @id @default(cuid())
+  activityId String
+  focusTagId String
+
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  focusTag FocusTag @relation(fields: [focusTagId], references: [id])
+
+  @@unique([activityId, focusTagId])
+  @@map("activity_focus_tags")
+}
+
+// Highlight preset chips
+model HighlightChip {
+  id    String @id @default(cuid())
+  key   String @unique
+  label String
+  icon  String?
+
+  activityLogs ActivityHighlightLog[]
+
+  @@map("highlight_chips")
+}
+
+model ActivityHighlightLog {
+  id          String @id @default(cuid())
+  activityId  String
+  highlightId String
+
+  activity  Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  highlight HighlightChip @relation(fields: [highlightId], references: [id])
+
+  @@unique([activityId, highlightId])
+  @@map("activity_highlight_logs")
+}
+
+// Next focus preset chips
+model NextFocusChip {
+  id    String @id @default(cuid())
+  key   String @unique
+  label String
+  icon  String?
+
+  activityLogs ActivityNextFocusLog[]
+
+  @@map("next_focus_chips")
+}
+
+model ActivityNextFocusLog {
+  id          String @id @default(cuid())
+  activityId  String
+  nextFocusId String
+
+  activity  Activity      @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  nextFocus NextFocusChip @relation(fields: [nextFocusId], references: [id])
+
+  @@unique([activityId, nextFocusId])
+  @@map("activity_next_focus_logs")
+}
+
+// ============================================
+// SKILL TRACK DRILLS (Scanning, Decision Chain)
+// ============================================
+
+model SkillTrackDrill {
+  id                   String @id @default(cuid())
+  key                  String @unique // e.g., "scanning.3point_scan"
+  title                String
+  track                String // "scanning" | "decision_chain"
+  durationMinutes      Int
+  recommendedFrequency String // e.g., "2x/week"
+  animationKey         String
+  whyItMatters         String
+  coachTips            Json   // JSON array of strings
+  metricConfig         Json   // JSON config for tap-first metrics
+
+  logs SkillTrackDrillLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("skill_track_drills")
+}
+
+model SkillTrackDrillLog {
+  id         String @id @default(cuid())
+  childId    String
+  drillId    String
+  repsCount  Int?
+  confidence Int?   // 1-5
+  metricData Json?  // Additional metric data
+
+  child ChildProfile    @relation(fields: [childId], references: [id], onDelete: Cascade)
+  drill SkillTrackDrill @relation(fields: [drillId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("skill_track_drill_logs")
 }

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#1f2937" stroke="#374151" stroke-width="2"/>
+
+  <!-- Field pattern -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#065f46" stroke-width="1" opacity="0.3"/>
+  <line x1="100" y1="30" x2="100" y2="170" stroke="#065f46" stroke-width="1" opacity="0.3"/>
+
+  <!-- Player silhouette (center) -->
+  <circle cx="100" cy="110" r="12" fill="#06b6d4"/>
+  <ellipse cx="100" cy="130" rx="8" ry="10" fill="#06b6d4"/>
+
+  <!-- Scan direction arrows (3 points) -->
+  <!-- Left scan -->
+  <path d="M70 90 L50 80 M50 80 L55 88 M50 80 L58 75" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="45" cy="75" r="6" fill="#22d3ee" opacity="0.5"/>
+
+  <!-- Right scan -->
+  <path d="M130 90 L150 80 M150 80 L145 88 M150 80 L142 75" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="155" cy="75" r="6" fill="#22d3ee" opacity="0.5"/>
+
+  <!-- Back scan -->
+  <path d="M100 95 L100 65 M100 65 L93 72 M100 65 L107 72" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="100" cy="55" r="6" fill="#22d3ee" opacity="0.5"/>
+
+  <!-- "3" indicator -->
+  <text x="100" y="165" text-anchor="middle" fill="#9ca3af" font-family="system-ui" font-size="14" font-weight="bold">3-POINT</text>
+</svg>

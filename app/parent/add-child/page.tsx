@@ -87,14 +87,14 @@ export default function AddChildPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-12">
+    <div className="py-8">
       <div className="container mx-auto px-4 max-w-2xl">
         <Card>
           <CardHeader>
             <div className="mb-4">
               <button
                 onClick={() => router.push('/parent/dashboard')}
-                className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+                className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1 min-h-[44px]"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Dashboard

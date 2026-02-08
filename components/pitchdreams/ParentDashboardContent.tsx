@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import Button from '@/components/ui/Button'
 import { ChildProfileCard, ParentTrustCard, ParentTrustSafetyModal } from '@/components/pitchdreams'
+import { ActivitySummaryCard, type ActivitySummary } from './ActivitySummaryCard'
 
 interface Child {
   id: string
@@ -14,6 +15,10 @@ interface Child {
   avatarColor: string
   sessionCount: number
   currentStreak: number
+  activitySummaries?: ActivitySummary[]
+  totalActivities?: number
+  totalMinutes?: number
+  avgGameIQScore?: number
 }
 
 interface ParentDashboardContentProps {
@@ -24,12 +29,15 @@ export function ParentDashboardContent({ children }: ParentDashboardContentProps
   const router = useRouter()
   const [showTrustModal, setShowTrustModal] = useState(false)
 
+  // Check if any child has activity data
+  const hasActivityData = children.some(child => (child.totalActivities || 0) > 0)
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-400">
           Track progress and manage settings for your children.
         </p>
       </div>
@@ -52,9 +60,9 @@ export function ParentDashboardContent({ children }: ParentDashboardContentProps
 
       {/* Children Grid */}
       {children.length > 0 ? (
-        <div>
+        <div className="space-y-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
               Your Children
             </h2>
             <Button
@@ -83,16 +91,38 @@ export function ParentDashboardContent({ children }: ParentDashboardContentProps
               />
             ))}
           </div>
+
+          {/* Activity Summaries */}
+          {(hasActivityData || children.length > 0) && (
+            <div>
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
+                Activity Mix
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {children.map((child) => (
+                  <ActivitySummaryCard
+                    key={child.id}
+                    childName={child.nickname}
+                    summaries={child.activitySummaries || []}
+                    totalActivities={child.totalActivities || 0}
+                    totalMinutes={child.totalMinutes || 0}
+                    avgGameIQScore={child.avgGameIQScore || 0}
+                    period="This Month"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         /* Empty State */
         <div className="text-center py-12">
-          <p className="text-gray-600 mb-4">
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             You haven't added any children yet.
           </p>
           <button
             onClick={() => router.push('/parent/onboarding')}
-            className="text-indigo-600 hover:text-indigo-700 font-medium"
+            className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-medium"
           >
             Add your first child →
           </button>

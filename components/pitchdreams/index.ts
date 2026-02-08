@@ -37,5 +37,45 @@ export { DrillStepList } from './DrillStepList'
 export { LessonCard } from './LessonCard'
 export { QuizCard } from './QuizCard'
 
+// Skill Track Components
+export { SkillAvatarAnimation } from './SkillAvatarAnimation'
+export { SkillTrackDrillCard } from './SkillTrackDrillCard'
+export { SkillAnimationSlot, getAvailableSkillIds, hasAnimation } from './SkillAnimationSlot'
+export type { AnimationVariant } from './SkillAnimationSlot'
+
+// Activity Logging Components
+export { ActivityTypePicker } from './ActivityTypePicker'
+export type { ActivityType } from './ActivityTypePicker'
+export { GameIQImpactPicker } from './GameIQImpactPicker'
+export type { GameIQImpact } from './GameIQImpactPicker'
+export { FocusTagPicker } from './FocusTagPicker'
+export type { FocusTag } from './FocusTagPicker'
+export { HighlightChipPicker } from './HighlightChipPicker'
+export type { ChipOption } from './HighlightChipPicker'
+export { FacilityPicker } from './FacilityPicker'
+export type { FacilityData } from './FacilityPicker'
+export { CoachPicker } from './CoachPicker'
+export type { CoachData } from './CoachPicker'
+export { ProgramPicker } from './ProgramPicker'
+export type { ProgramData, ProgramType } from './ProgramPicker'
+
+// Dashboard Components
+export { ActivitySummaryCard } from './ActivitySummaryCard'
+export type { ActivitySummary } from './ActivitySummaryCard'
+
 // Locked States
 export { LockedState, PermissionLockedState, AgeGatedState } from './LockedState'
+
+// Adaptive Session Mode Components
+export { QuickCheckIn } from './QuickCheckIn'
+export type { CheckInResult } from './QuickCheckIn'
+export { SessionModeLabel } from './SessionModeLabel'
+export { CoachNudgeCard } from './CoachNudgeCard'
+export type { CoachNudge } from './CoachNudgeCard'
+export { SessionRating } from './SessionRating'
+
+// Training Arc Components
+export { ArcCard } from './ArcCard'
+export { ArcBanner } from './ArcBanner'
+export { ArcCompletionScreen } from './ArcCompletionScreen'
+export { ArcSuggestionCard } from './ArcSuggestionCard'

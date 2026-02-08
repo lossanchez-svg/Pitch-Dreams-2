@@ -72,7 +72,7 @@ export default function ParentOnboarding() {
     }
 
     if (!agreedToPrivacy) {
-      setError('Please agree to the Privacy Policy')
+      setError('Please agree to the Terms of Service and Privacy Policy')
       return
     }
 
@@ -170,7 +170,7 @@ export default function ParentOnboarding() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 py-12">
+    <div className="py-8">
       <div className="container mx-auto px-4 max-w-2xl">
         {/* Existing Account Warning */}
         {showExistingAccountWarning && (
@@ -298,13 +298,17 @@ export default function ParentOnboarding() {
                 <div className="flex items-start gap-2">
                   <input
                     type="checkbox"
-                    id="privacy-agree"
+                    id="terms-agree"
                     checked={agreedToPrivacy}
                     onChange={(e) => setAgreedToPrivacy(e.target.checked)}
                     className="mt-1"
                   />
-                  <label htmlFor="privacy-agree" className="text-sm text-gray-700 dark:text-gray-300">
+                  <label htmlFor="terms-agree" className="text-sm text-gray-700 dark:text-gray-300">
                     I agree to the{' '}
+                    <a href="/terms" target="_blank" className="text-primary hover:underline">
+                      Terms of Service
+                    </a>
+                    {' '}and{' '}
                     <a href="/privacy" target="_blank" className="text-primary hover:underline">
                       Privacy Policy
                     </a>
