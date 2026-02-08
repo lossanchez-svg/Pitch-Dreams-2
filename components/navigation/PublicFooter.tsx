@@ -22,6 +22,9 @@ export function PublicFooter() {
             <Link href="/about" className="text-gray-500 hover:text-white transition-colors min-h-[44px] flex items-center">
               About
             </Link>
+            <Link href="/terms" className="text-gray-500 hover:text-white transition-colors min-h-[44px] flex items-center">
+              Terms
+            </Link>
             <Link href="/privacy" className="text-gray-500 hover:text-white transition-colors min-h-[44px] flex items-center">
               Privacy
             </Link>
